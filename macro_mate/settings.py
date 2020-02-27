@@ -19,8 +19,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hr^u(=cbwwca*h0v!=*v#@o!r1d-t8!hmxy(wi=4c_w5+onz62'
+
+# SECRET key, in secret.key file
+key = None
+with open('secret.key') as f:
+    key = f.read().strip()
+SECRET_KEY = key
+
+# API Key for Nutrition Analysis, in edamam.key file
+edamamKey = None
+with open('edamam.key') as f:
+    edamamKey = f.read().strip()
+NUTRITION_API_KEY = edamamKey
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
