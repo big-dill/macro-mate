@@ -1,0 +1,54 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+Home
+{% endblock %}
+
+{% block body_block %}
+<div class="jumbotron p-4">
+    <div class="container">
+        <h1 class="jumbotron-heading">MacroMate</h1>
+        <div>
+            <h2 class="h2">
+                Focus on Food, Fuel your Fitness
+                {% comment %} {% if user.is_authenticated %}
+                howdy {{ user.username }}!
+                {% else %}
+                hey there partner!
+                {% endif %} {% endcomment %}
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <p>To be or not to be</p>
+                        <footer class="card-blockquote">Footer<cite title="Source title">Shakespeare</cite></footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-6">
+                <div class="card">
+                    <div class="card-body">
+                        <blockquote class="blockquote">
+                            <p>Oh my God, I can't believe it...</p>
+                            <footer class="card-blockquote">Footer<cite title="Source title">Kaiser Chiefs</cite>
+                            </footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

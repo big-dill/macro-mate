@@ -23,7 +23,7 @@
             "label": "makemigrations",
             "type": "shell",
             "command": "${config:python.pythonPath}",
-            "args": ["manage.py", "makemigrations", "rango"]
+            "args": ["manage.py", "makemigrations", "macro_mate"]
         },
         {
             "label": "shell",
