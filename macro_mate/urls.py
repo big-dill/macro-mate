@@ -4,5 +4,5 @@ app_name = 'macro_mate'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('login/', views.login, name='login')
+    path('login/', views.login, name='login'),
 ]
