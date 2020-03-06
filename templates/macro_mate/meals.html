@@ -1,0 +1,46 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+Meals
+{% endblock %}
+
+{% block body_block %}
+<div class="jumbotron p-4">
+    <div class="container">
+        <h1 class="jumbotron-heading">Meals</h1>
+        <div>
+            <h2 class="h2">
+                Add your meals below
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <blockquote class="blockquote">
+                        <p>To be a form</p>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-6">
+                <div class="card">
+                    <div class="card-body">
+                        <blockquote class="blockquote">
+                            <p>Meal</p>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
