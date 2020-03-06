@@ -1,0 +1,26 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+Register
+{%endblock title_block%}
+
+{% block body_block %} 
+<h1> Register for MacroMate! </h1>
+{% if registered %}
+Thank you for registering for MacroMate! Let youor food journey begin!
+<a href = "{% url 'macro_mate:index' %}">Back to Homepage</a> <br />
+{% else %}
+<strong> Register here </strong> <br />
+<form id = "user_form" method ="post" action = "{% url 'rango:register' %}"
+        enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+
+        <input type="submit" value="Register" />
+</form>
+{% endif %}
+{% endblock %}
