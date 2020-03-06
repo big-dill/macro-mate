@@ -2,45 +2,46 @@
 {% load staticfiles %}
 
 {% block title_block %}
-Meals
+    Meals
 {% endblock %}
 
 {% block body_block %}
-<div class="jumbotron p-4">
-    <div class="container">
-        <h1 class="jumbotron-heading">Meals</h1>
-        <div>
-            <h2 class="h2">
-                Add your meals below
-            </h2>
+    <div class="jumbotron p-4">
+        <div class="container">
+            <h1 class="jumbotron-heading">Meals</h1>
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <blockquote class="blockquote">
-                        <p>To be a form</p>
-                    </blockquote>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="card mb-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                                <div class="form-group">
+                                    <blockquote class="blockquote">
+                                        <label for="meal_text_area">Meal: </label>
+                                        <span><textarea class="form-control" id="meal_text_area" rows="5"></textarea></span>
+                                    </blockquote>
+                                    <button class="btn btn-primary text-center" type="submit">Add meal</button>
+                                </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6">
-            <div class="card mb-6">
-                <div class="card">
-                    <div class="card-body">
-                        <blockquote class="blockquote">
-                            <p>Meal</p>
-                        </blockquote>
+                <div class="col-md-6">
+                    <div class="card mb-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <blockquote class="blockquote">
+                                    <p>Image to go here</p>
+                                </blockquote>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 {% endblock %}
