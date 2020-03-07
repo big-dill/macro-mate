@@ -2,6 +2,7 @@
 # But a vscode task is setup to do run this
 # cmd-shift-p > Tasks:Run Task > populate-db
 
+import lorem
 import random
 import django
 import os
@@ -17,7 +18,8 @@ def add_meal(name, url):
      # randomly assign a list
     m = Meal.objects.get_or_create(name=name, url=url)[0]
     m.categories = get_random_meal_categories()
-    
+    # Randomly generate some lorum for the notes
+    m.notes = lorem.paragraph() if random.choice([True, False]) else ''
     m.save()
 
 
