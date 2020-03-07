@@ -15,6 +15,9 @@ django.setup()
 
 from macro_mate.models import Meal
 
+MAX_MEAL_SERVING = 5
+MAX_NUTRIENT_QUANTITY = 4000
+
 def add_meal(name, url, tags, ingredients):
     # randomly assign a list
     m = Meal.objects.get_or_create(name=name, url=url)[0]
@@ -22,10 +25,18 @@ def add_meal(name, url, tags, ingredients):
     m.categories = get_random_meal_categories()
     # randomly add tags (change list to individual args with *)
     m.tags.add(*tags)
+    # add random serving
+    m.serving = random.randint(0, MAX_MEAL_SERVING)
     # join tags into new line separated list
     m.ingredients = get_char_joined_string(ingredients, "\n")
     # Randomly generate some lorum for the notes
     m.notes = lorem.paragraph() if random.choice([True, False]) else ''
+    # Add nutrients (default units will be used)
+    m.calorie_quantity = random.randint(0, MAX_NUTRIENT_QUANTITY)
+    m.fat_quantity = random.randint(0, MAX_NUTRIENT_QUANTITY)
+    m.protein_quantity = random.randint(0, MAX_NUTRIENT_QUANTITY)
+    m.carbs_quantity = random.randint(0, MAX_NUTRIENT_QUANTITY)
+
     m.save()
 
 
