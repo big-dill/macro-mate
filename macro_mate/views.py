@@ -21,7 +21,7 @@ def user_login(request):
         password = request.POST.get('password')
         user = authenticate(username=username, password = password)
 
-        # if the login details are correct 
+        # if the login details are correct
         if user:
             if user.is_active:
                 login(request, user)
@@ -35,9 +35,9 @@ def user_login(request):
         return render(request, 'macro_mate/login.html')
 
 def register(request):
-    registered = False 
+    registered = False
 
-    # checking that the registration information is valid 
+    # checking that the registration information is valid
     if request.method =='POST':
         user_form = UserForm(request.POST)
         profile_form = UserProfileForm(request.POST)
@@ -57,15 +57,15 @@ def register(request):
 
             profile.save
 
-            registered = True; 
+            registered = True;
 
-        else: 
+        else:
             print(user_form.errors, profile_form.errors)
 
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
-        
+
     return render(request,
                 'macro_mate/register.html',
                 context = {'user_form': user_form,
