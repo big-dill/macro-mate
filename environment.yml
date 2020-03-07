@@ -12,3 +12,4 @@ dependencies:
   - pip=20.0.2
   - pip:
       - django-multiselectfield
+      - django-registration-redux==2.2
