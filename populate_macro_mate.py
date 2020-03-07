@@ -3,6 +3,7 @@
 # cmd-shift-p > Tasks:Run Task > populate-db
 
 
+from macro_mate.models import Meal
 import lorem
 import random
 import django
@@ -13,10 +14,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
-from macro_mate.models import Meal
 
 MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
+
 
 def add_meal(name, url, tags, ingredients):
     # randomly assign a list
@@ -93,8 +94,11 @@ def populate():
 
     for meal in meals:
         # add meal to database
-        m = add_meal(meal['name'], meal['url'], get_random_sample(
-            tags), get_random_sample(ingredients))
+        add_meal(
+            meal['name'],
+            meal['url'],
+            get_random_sample(tags),
+            get_random_sample(ingredients))
         # add random compulsory tag to meal
 
         # add random optional tag to meal
