@@ -15,7 +15,7 @@ def meals(request):
     return response
 
 
-def weekly_plan(request):
+def your_meals(request):
     context_dict = {}
-    response = render(request, 'macro_mate/weekly_plan.html', context=context_dict)
+    response = render(request, 'macro_mate/your_meals.html', context=context_dict)
     return response
