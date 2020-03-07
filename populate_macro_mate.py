@@ -14,23 +14,31 @@ django.setup()
 
 from macro_mate.models import Meal
 
-def add_meal(name, url):
-     # randomly assign a list
+
+def add_meal(name, url, tags):
+    # randomly assign a list
     m = Meal.objects.get_or_create(name=name, url=url)[0]
+    # randomly add categories
     m.categories = get_random_meal_categories()
+    # randomly add tags (change list to individual args with *)
+    m.tags.add(*tags)
     # Randomly generate some lorum for the notes
     m.notes = lorem.paragraph() if random.choice([True, False]) else ''
     m.save()
 
 
 def get_random_meal_categories():
-    categories = Meal.MEAL_CATEGORIES
-    length = len(categories)
-    sampleLength = random.randint(1, length)
-    selection = random.sample(Meal.MEAL_CATEGORIES, sampleLength)
+    selection = get_random_sample(Meal.MEAL_CATEGORIES)
     # create comma separated list from first value to store in db
     # as MultiSelectField stores a comma separated char
     return ','.join(str(s[0]) for s in selection)
+
+
+def get_random_sample(collection):
+    length = len(collection)
+    sampleLength = random.randint(1, length)
+    selection = random.sample(collection, sampleLength)
+    return selection
 
 
 def populate():
@@ -48,9 +56,17 @@ def populate():
             'url': ''}
     ]
 
+    tags = [
+        "keto",
+        "vegetarian",
+        "chunky",
+        "gluten-free",
+        "high-protein",
+    ]
+
     for meal in meals:
         # add meal to database
-        m = add_meal(meal['name'], meal['url'])
+        m = add_meal(meal['name'], meal['url'], get_random_sample(tags))
         # add random compulsory tag to meal
 
         # add random optional tag to meal
