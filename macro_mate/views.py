@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect 
 from macro_mate.models import UserProfile
+from macro_mate.forms import UserForm, UserProfileForm
 
 
 # Create your views here.
@@ -58,15 +59,20 @@ def register(request):
             profile.save
 
             registered = True; 
-        else:
-            user_form = UserForm()
-            profile_form = UserProfileForm()
+
+        else: 
+            print(user_form.errors, profile_form.errors)
+
+    else:
+
+        user_form = UserForm()
+        profile_form = UserProfileForm()
         
-        return render(request,
-                     'macro_mate/login.html',
-                     context = {'user_form': user_form,
-                     'profile_form': profile_form,
-                     'registered': registered})
+    return render(request,
+                'macro_mate/register.html',
+                context = {'user_form': user_form,
+                'profile_form': profile_form,
+                'registered': registered})
 
 
 

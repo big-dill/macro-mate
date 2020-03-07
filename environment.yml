@@ -2,9 +2,9 @@ name: macro_mate
 channels:
   - defaults
 dependencies:
-  - python=3.7.5
   - django==2.1.5
+  - python=3.7.5
   - pillow
   - autopep8
-prefix: /opt/anaconda3/envs/macro_mate
+prefix: C:\Users\Julia\Anaconda3\envs\macro_mate
 

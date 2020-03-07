@@ -117,10 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Password hashers 
 
-PASSWORD_HASHERS = (
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2HA1PasswordHasher',
-)
+PASSWORD_HASHERS = ( 'django.contrib.auth.hashers.PBKDF2PasswordHasher', 'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher', )
+
 
 
 # Internationalization
