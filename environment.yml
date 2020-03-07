@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+<<<<<<< HEAD
   - django==2.1.5
   - python=3.7.5
   - pillow
@@ -26,23 +27,15 @@ prefix: C:\Users\Julia\Anaconda3\envs\macro_mate
   - olefile=0.46
   - openssl=1.1.1d
   - pillow=7.0.0
+=======
+  - python==3.7.5 
+  - pillow 
+  - autopep8
+  - django==2.1.5
+  - django-taggit
+  - lorem 
+>>>>>>> 6244f2fc32c3d1126f1efd62b7de582bb9278b07
   - pip=20.0.2
-  - pycodestyle=2.5.0
-  - python=3.7.5
-  - pytz=2019.3
-  - readline=7.0
-  - setuptools=45.2.0
-  - sqlite=3.31.1
-  - tk=8.6.8
-  - wheel=0.34.2
-  - xz=5.2.4
-  - zlib=1.2.11
-  - zstd=1.3.7
   - pip:
-      - django-braces==1.14.0
-      - django-model-utils==4.0.0
-      - django-multiselectfield==0.1.12
-      - django-star-ratings==0.9.1
-      - six==1.14.0
-      - swapper==1.1.2.post1
+    - django-multiselectfield 
 
