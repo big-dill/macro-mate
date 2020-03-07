@@ -2,6 +2,7 @@
 # But a vscode task is setup to do run this
 # cmd-shift-p > Tasks:Run Task > populate-db
 
+
 import lorem
 import random
 import django
@@ -14,24 +15,31 @@ django.setup()
 
 from macro_mate.models import Meal
 
-
-def add_meal(name, url, tags):
+def add_meal(name, url, tags, ingredients):
     # randomly assign a list
     m = Meal.objects.get_or_create(name=name, url=url)[0]
     # randomly add categories
     m.categories = get_random_meal_categories()
     # randomly add tags (change list to individual args with *)
     m.tags.add(*tags)
+    # join tags into new line separated list
+    m.ingredients = get_char_joined_string(ingredients, "\n")
     # Randomly generate some lorum for the notes
     m.notes = lorem.paragraph() if random.choice([True, False]) else ''
     m.save()
 
 
+def get_char_joined_string(collection, char):
+    return str(char).join(str(item) for item in collection)
+
+
 def get_random_meal_categories():
     selection = get_random_sample(Meal.MEAL_CATEGORIES)
+    # get first value from tuples in MEAL_CATEGORIES for db population
+    selection = [s[0] for s in selection]
     # create comma separated list from first value to store in db
     # as MultiSelectField stores a comma separated char
-    return ','.join(str(s[0]) for s in selection)
+    return get_char_joined_string(selection, ',')
 
 
 def get_random_sample(collection):
@@ -64,9 +72,18 @@ def populate():
         "high-protein",
     ]
 
+    ingredients = [
+        '20oz Raw Brocolli',
+        '200g Chicken',
+        '70g Sweetcorn',
+        '100g Turkey',
+        '20g Broccoli'
+    ]
+
     for meal in meals:
         # add meal to database
-        m = add_meal(meal['name'], meal['url'], get_random_sample(tags))
+        m = add_meal(meal['name'], meal['url'], get_random_sample(
+            tags), get_random_sample(ingredients))
         # add random compulsory tag to meal
 
         # add random optional tag to meal
