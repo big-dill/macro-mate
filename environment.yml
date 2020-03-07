@@ -3,39 +3,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-<<<<<<< HEAD
-  - django==2.1.5
-  - python=3.7.5
+  - python==3.7.5
   - pillow
-  - autopep8
-prefix: C:\Users\Julia\Anaconda3\envs\macro_mate
-  - autopep8=1.4.4
-  - ca-certificates=2019.11.28
-  - certifi=2019.11.28
-  - django=2.1.5
-  - django-taggit=0.24.0
-  - freetype=2.9.1
-  - jpeg=9b
-  - libcxx=4.0.1
-  - libcxxabi=4.0.1
-  - libedit=3.1.20181209
-  - libffi=3.2.1
-  - libpng=1.6.37
-  - libtiff=4.1.0
-  - lorem=0.1.1
-  - ncurses=6.2
-  - olefile=0.46
-  - openssl=1.1.1d
-  - pillow=7.0.0
-=======
-  - python==3.7.5 
-  - pillow 
   - autopep8
   - django==2.1.5
   - django-taggit
-  - lorem 
->>>>>>> 6244f2fc32c3d1126f1efd62b7de582bb9278b07
+  - lorem
   - pip=20.0.2
   - pip:
-    - django-multiselectfield 
-
+      - django-multiselectfield
