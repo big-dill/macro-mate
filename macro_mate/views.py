@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect 
 from macro_mate.models import User_Profile
-from macro_mate.forms import UserForm, UserProfileForm
+from macro_mate.forms import UserForm, User_ProfileForm
 
 
 # Create your views here.
