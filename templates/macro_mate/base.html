@@ -28,10 +28,14 @@
         <h5 class="my-0 mr-md-auto font-weight-normal"> {% if user.is_authenticated %} {{ user.username }} {% endif %} MacroMate</h5>
         {% comment %} App Nav - Needs to be replaced with links {% endcomment %}
         <nav class="my-2 my-md-0 mr-md-3">
+        {% comment %} Header only displays Meals, Weekly Plan & Account if user is logged in {% endcomment %}
+            {% if  user.is_authenticated %}
             <a class="p-2 text-dark" href="#">Meals</a>
             <a class="p-2 text-dark" href="#">Weekly Plan</a>
-            <a class="p-2 text-dark" href="#">Explore</a>
             <a class="p-2 text-dark" href="#">Account</a>
+            {% else %}
+            <a class="p-2 text-dark" href="#">Explore</a>
+            {% endif %}
         </nav>
         {% comment %} Sign up and Login Space - Needs to be dynamic to 'log out' if user is logged in {% endcomment %}
 
