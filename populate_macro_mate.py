@@ -2,8 +2,6 @@
 # But a vscode task is setup to do run this
 # cmd-shift-p > Tasks:Run Task > populate-db
 
-
-from macro_mate.models import Meal
 import lorem
 import random
 import django
@@ -14,14 +12,17 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
+from macro_mate.models import Meal
+from django.contrib.auth.models import User
+
 
 MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
 
 
-def add_meal(name, url, tags, ingredients):
+def add_meal(owner, name, url, tags, ingredients):
     # randomly assign a list
-    m = Meal.objects.get_or_create(name=name, url=url)[0]
+    m = Meal.objects.get_or_create(owner=owner, name=name, url=url)[0]
     # randomly add categories
     m.categories = get_random_meal_categories()
     # randomly add tags (change list to individual args with *)
@@ -39,6 +40,8 @@ def add_meal(name, url, tags, ingredients):
     m.carbs_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
 
     m.save()
+
+    return m
 
 
 def get_char_joined_string(collection, char):
@@ -61,22 +64,33 @@ def get_random_sample(collection):
     return selection
 
 
+def add_user(username):
+    user = User.objects.create_user(
+        username=username,
+        email=username + "@gmail.com",
+        password=username
+    )
+    user.save()
+    return user
+
+
 def populate():
     # Create dictionaries of fake pages
-    meals = [
-        {'name': 'Spaghetti and Meatballs',
-            'url': ''},
-        {'name': 'Chicken Surprise',
-            'url': 'http://www.reciperoulette.tv/#4974'},
-        {'name': 'Classic Yorkshire Puddings',
-            'url': 'http://www.reciperoulette.tv/#44613'},
-        {'name': 'Prawns and aubergine in hoisin sauce',
-            'url': 'http://www.reciperoulette.tv/#7883'},
-        {'name': 'Italian Bread Soup',
-            'url': ''}
+    meal_names = [
+        'Spaghetti and Meatballs',
+        'Chicken Surprise',
+        'Classic Yorkshire Puddings',
+        'Prawns and Aubergine in Hoisin Sauce',
+        'Italian Bread Soup'
     ]
 
-    tags = [
+    meal_urls = [
+        '',
+        'http://www.reciperoulette.tv/#4974',
+        'http://www.reciperoulette.tv/#44613'
+    ]
+
+    meal_tags = [
         "keto",
         "vegetarian",
         "chunky",
@@ -84,7 +98,7 @@ def populate():
         "high-protein",
     ]
 
-    ingredients = [
+    meal_ingredients = [
         '20oz Raw Brocolli',
         '200g Chicken',
         '70g Sweetcorn',
@@ -92,18 +106,26 @@ def populate():
         '20g Broccoli'
     ]
 
-    for meal in meals:
-        # add meal to database
-        add_meal(
-            meal['name'],
-            meal['url'],
-            get_random_sample(tags),
-            get_random_sample(ingredients))
-        # add random compulsory tag to meal
+    users = [
+        'tim',
+        'jane',
+        'sebastian',
+        'elizabeth'
+    ]
 
-        # add random optional tag to meal
+    # Delete all existing users that aren't superusers
+    User.objects.filter(is_superuser=False).delete()
 
-        # add ingredients to meal
+    for name in users:
+        user = add_user(name)
+        print("here")
+        # Add a random amount of meals between 1 and 10
+        for i in range(random.randint(1, 10)):
+            add_meal(user.user_profile,
+                     random.choice(meal_names),
+                     random.choice(meal_urls),
+                     get_random_sample(meal_tags),
+                     get_random_sample(meal_ingredients))
 
 
 if __name__ == '__main__':
