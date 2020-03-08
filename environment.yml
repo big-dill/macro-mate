@@ -3,13 +3,13 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python==3.7.5 
-  - pillow 
+  - python==3.7.5
+  - pillow
   - autopep8
   - django==2.1.5
   - django-taggit
-  - lorem 
+  - lorem
   - pip=20.0.2
   - pip:
-    - django-multiselectfield 
-
+      - django-multiselectfield
+      - django-registration-redux==2.2
