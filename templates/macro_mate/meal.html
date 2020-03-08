@@ -5,3 +5,12 @@
     Meals
 {% endblock %}
 
+
+{% block body_block %}
+<h1>{{ meal.name }}</h1>
+    <h4>Tags</h4>
+    {% for tag in meal.tags.all %}
+    <div class="mr-1 badge badge-info">{{ tag }}</div>
+    {% endfor %}
+{% endblock %}
+

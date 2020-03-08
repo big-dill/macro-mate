@@ -5,8 +5,9 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from macro_mate.forms import UserForm, UserProfileForm
 
-
 # Create your views here.
+from macro_mate.models import Meal
+
 
 def index(request):
     context_dict = {}
@@ -84,3 +85,18 @@ def your_meals(request):
     context_dict = {}
     response = render(request, 'macro_mate/your_meals.html', context=context_dict)
     return response
+
+
+def meal(request, meal_id_slug):
+
+    print(Meal.objects.all)
+
+    context_dict = {}
+
+    try:
+        mealget = Meal.objects.get(id=meal_id_slug)
+        context_dict['meal'] = mealget
+
+    except Meal.DoesNotExist:
+        context_dict['meal'] = None
+    return render(request, 'macro_mate/meal.html', context=context_dict)
