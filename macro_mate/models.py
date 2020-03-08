@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 from multiselectfield import MultiSelectField
 
 
-class User_Profile(models.Model):
+class UserProfile(models.Model):
     """A user profile model linked to Django's base User class."""
 
     # User
@@ -28,12 +28,12 @@ class User_Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        User_Profile.objects.create(user=instance)
+        UserProfile.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.user_profile.save()
+    instance.userprofile.save()
 
 
 # TODO: Create rating functionality for meal
@@ -68,7 +68,7 @@ class Meal(models.Model):
     # ----------------
 
     # The owning user
-    owner = models.ForeignKey(User_Profile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     # Fields
     # ------

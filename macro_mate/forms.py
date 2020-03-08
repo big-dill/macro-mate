@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-from macro_mate.models import User_Profile
+from macro_mate.models import UserProfile
 
 
-class User_Form(forms.ModelForm):
+class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
@@ -11,7 +11,7 @@ class User_Form(forms.ModelForm):
         fields = ('username', 'email', 'password',)
 
 
-class User_Profile_Form(forms.ModelForm):
+class UserProfileForm(forms.ModelForm):
     class Meta:
-        model = User_Profile
+        model = UserProfile
         fields = ('profilePicture',)
