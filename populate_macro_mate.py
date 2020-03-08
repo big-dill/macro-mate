@@ -12,8 +12,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
-from django.contrib.auth.models import User
 from macro_mate.models import Meal
+from django.contrib.auth.models import User
+
 
 MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
@@ -106,9 +107,10 @@ def populate():
     ]
 
     users = [
-        'julia',
-        'hugh',
-        'mark'
+        'tim',
+        'jane',
+        'sebastian',
+        'elizabeth'
     ]
 
     # Delete all existing users that aren't superusers
