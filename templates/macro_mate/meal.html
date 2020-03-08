@@ -7,10 +7,15 @@
 
 
 {% block body_block %}
-<h1>{{ meal.name }}</h1>
+    <h1>{{ meal.name }}</h1>
     <h4>Tags</h4>
     {% for tag in meal.tags.all %}
-    <div class="mr-1 badge badge-info">{{ tag }}</div>
+        <div class="mr-1 badge badge-info">{{ tag }}</div>
     {% endfor %}
+    <h4>Nutritional information</h4>
+    <p>Calories: {{ meal.calorie_quantity }}{{ meal.calorie_unit }}</p>
+    <p>Fat: {{ meal.fat_quantity }}{{ meal.fat_unit }}</p>
+    <p>Carbohydrates: {{ meal.carbs_quantity }}{{ meal.carbs_unit }}</p>
+    <p>Protein: {{ meal.protein_quantity }}{{ meal.protein_unit }}</p>
 {% endblock %}
 
