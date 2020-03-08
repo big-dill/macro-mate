@@ -1,0 +1,65 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Weekly plan
+{% endblock %}
+
+{% block body_block %}
+
+    <link rel="stylesheet" href="{% static  'css/weekly_plan.css' %}"/>
+
+    <div class="square-container">
+
+    {% comment %} Probably to replaced by a for loop {% endcomment %}
+
+
+        <div class="square">
+            <div class="content">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content spread">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content column">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content spread">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content column">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content spread">
+            </div>
+        </div>
+
+        <div class="square">
+            <div class="content column">
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}

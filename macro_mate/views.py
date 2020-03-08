@@ -76,5 +76,11 @@ def register(request):
 
 def meals(request):
     context_dict = {}
-    response = render(request,  'macro_mate/meals.html', context=context_dict)
+    response = render(request, 'macro_mate/meals.html', context=context_dict)
+    return response
+
+
+def your_meals(request):
+    context_dict = {}
+    response = render(request, 'macro_mate/your_meals.html', context=context_dict)
     return response
