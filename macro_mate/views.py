@@ -32,7 +32,7 @@ def user_login(request):
             print("Incorrect login details: {username}, {password}")
             return HttpResponse("Incorrect login details")
     else:
-        return render(request, 'macro_mate/index.html')
+        return render(request, 'macro_mate:login')
 
 def register(request):
     registered = False

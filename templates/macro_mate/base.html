@@ -41,7 +41,7 @@
 
         {% else %}
 
-        <a class="btn btn-outline-primary" href="{% url 'auth_login'%}?next={% url 'auth_login' %}"> Login</a>
+        <a class="btn btn-outline-primary" href="{% url 'auth_login'%}"> Login</a>
 
         <a class="btn btn-outline-primary" href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
 
@@ -71,7 +71,7 @@
 
                         {% else %}
                         <!-- If there is no user logged in, display Login and Register options-->
-                        <li><a class="text-muted" href="{% url 'auth_login'%}?next={% url 'auth_login' %}">Login</a></li>
+                        <li><a class="text-muted" href="{% url 'auth_login'%}">Login</a></li>
                         <li><a class="text-muted" href="{% url 'registration_register' %}?next={% url 'registration_register' %}">Register</a></li>
                         {% endif %}
                         
