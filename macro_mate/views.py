@@ -3,10 +3,13 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect
-from macro_mate.forms import UserForm, UserProfileForm
+from macro_mate.forms import UserForm, UserProfileForm, MealForm
 
+# decorator
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
 
 def index(request):
     context_dict = {}
@@ -76,5 +79,31 @@ def register(request):
 
 def meals(request):
     context_dict = {}
-    response = render(request,  'macro_mate/meals.html', context=context_dict)
+    response = render(request, 'macro_mate/meals.html', context=context_dict)
     return response
+
+
+@login_required
+def add_meal(request):
+
+    form = MealForm()
+
+    if request.method == 'POST':
+        form = MealForm(request.POST)
+
+        # Get the user, no need to validate because @login_required
+        user = request.user
+
+        if form.is_valid():
+            if user:
+                page = form.save(commit=False)
+                page.owner = user.userprofile
+                page.save()
+
+                # Redirect to meal viewer
+                return redirect(reverse('macro_mate:index'))
+        else:
+            print(form.errors)
+
+    context_dict = {'form': form}
+    return render(request, 'macro_mate/add_meal.html', context=context_dict)

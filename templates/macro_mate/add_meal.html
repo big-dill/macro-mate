@@ -1,0 +1,28 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+Add Meal
+{% endblock %}
+
+{% block page_header_block %}
+Add New Meal
+{% endblock %}
+
+{% block body_block %}
+<div>
+    <form id="meal_form" method="post" action="/macro_mate/add_meal/">
+        {% csrf_token %}
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+        {{ field.errors }}
+        {{ field.help_text }}
+        {{ field }}
+        {% endfor %}
+        <input type="submit" name="submit" value="Add Meal" />
+    </form>
+</div>
+
+{% endblock %}

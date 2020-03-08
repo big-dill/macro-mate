@@ -64,6 +64,11 @@ class Meal(models.Model):
                        (DINNER, 'Dinner'),
                        (SNACK, 'Snack'))
 
+    CALORIE_DEFAULT_UNIT = 'kcal'
+    FAT_DEFAULT_UNIT = 'g'
+    PROTEIN_DEFAULT_UNIT = 'g'
+    CARBS_DEFAULT_UNIT = 'g'
+
     # Reference Fields
     # ----------------
 
