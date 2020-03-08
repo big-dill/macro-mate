@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 from multiselectfield import MultiSelectField
 
 
-class User_Profile(models.Model):
+class UserProfile(models.Model):
     """A user profile model linked to Django's base User class."""
 
     # User
@@ -68,7 +68,7 @@ class Meal(models.Model):
     # ----------------
 
     # The owning user
-    owner = models.ForeignKey(User_Profile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
     # Fields
     # ------
