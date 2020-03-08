@@ -37,7 +37,8 @@
             <a class="p-2 text-dark" href="#">Explore</a>
             {% endif %}
         </nav>
-        {% comment %} Sign up and Login Space - Needs to be dynamic to 'log out' if user is logged in {% endcomment %}
+        {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and 
+        'login' and 'sign up' if user is not logged in {% endcomment %}
 
         {% if user.is_authenticated %}
 
