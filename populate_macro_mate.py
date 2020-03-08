@@ -12,9 +12,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
-from macro_mate.models import Meal
 from django.contrib.auth.models import User
-
+from macro_mate.models import Meal
 
 MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
@@ -118,10 +117,9 @@ def populate():
 
     for name in users:
         user = add_user(name)
-        print("here")
         # Add a random amount of meals between 1 and 10
         for i in range(random.randint(1, 10)):
-            add_meal(user.user_profile,
+            add_meal(user.userprofile,
                      random.choice(meal_names),
                      random.choice(meal_urls),
                      get_random_sample(meal_tags),
