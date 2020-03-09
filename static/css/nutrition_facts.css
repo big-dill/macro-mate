@@ -1,139 +1,28 @@
-.image {
-    width: 250px;
-    float: left;
-    margin: 20px;
-}
-
-body {
-    font-size: small;
-    line-height: 1.4;
-}
-
-p {
-    margin: 0;
-}
-
-.performance-facts {
-    border: 1px solid black;
-    margin: 20px;
-    float: left;
-    width: 280px;
-    padding: 0.5rem;
-
-    table {
-        border-collapse: collapse;
-    }
-}
-
-.performance-facts__title {
-    font-weight: bold;
-    font-size: 2rem;
-    margin: 0 0 0.25rem 0;
-}
-
-.performance-facts__header {
-    border-bottom: 10px solid black;
-    padding: 0 0 0.25rem 0;
-    margin: 0 0 0.5rem 0;
-
-    p {
-        margin: 0;
-    }
-}
-
-.performance-facts__table {
-    width: 100%;
-
-    thead tr {
-
-        th,
-        td {
-            border: 0;
-        }
-    }
-
-    th,
-    td {
-        font-weight: normal;
-        text-align: left;
-        padding: 0.25rem 0;
-        border-top: 1px solid black;
-        white-space: nowrap;
-    }
-
-    td {
-        &:last-child {
-            text-align: right;
-        }
-    }
-
-    .blank-cell {
-        width: 1rem;
-        border-top: 0;
-    }
-
-    .thick-row {
-
-        th,
-        td {
-            border-top-width: 5px;
-        }
-    }
-}
-
-.small-info {
-    font-size: 0.7rem;
-}
-
-.performance-facts__table--small {
-    @extend .performance-facts__table;
-    border-bottom: 1px solid #999;
-    margin: 0 0 0.5rem 0;
-
-    thead {
-        tr {
-            border-bottom: 1px solid black;
-        }
-    }
-
-    td {
-        &:last-child {
-            text-align: left;
-        }
-    }
-
-    th,
-    td {
-        border: 0;
-        padding: 0;
-    }
-}
-
-.performance-facts__table--grid {
-    @extend .performance-facts__table;
-    margin: 0 0 0.5rem 0;
-
-    td {
-        &:last-child {
-            text-align: left;
-
-            &::before {
-                content: "•";
-                font-weight: bold;
-                margin: 0 0.25rem 0 0;
-            }
-        }
-    }
-}
-
-.text-center {
+.nutrition-label {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 120px;
     text-align: center;
+    border: 1px solid #000;
+    border-radius: 100px/50px;
+    overflow: hidden;
 }
 
-.thick-end {
-    border-bottom: 10px solid black;
+.nutrition-title {
+    display: inline-block;
+    margin-top: 30px;
 }
 
-.thin-end {
-    border-bottom: 1px solid black;
+.nutrition-bottom {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 50px;
+    color: #fff;
+    line-height: 40px;
+    border-top: 1px solid #000;
+    border-radius: 100px/50px;
+    background-color: #000;
 }

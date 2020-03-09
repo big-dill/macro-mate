@@ -1,4 +1,4 @@
-{% extends 'macro_mate/base.html' %}
+{% extends 'macro_mate/layout.html' %}
 {% load staticfiles %}
 {% comment %} Add custom filters for form CSS below {% endcomment %}
 {% load filters %}
@@ -80,6 +80,18 @@ Add New Meal
             <div>
                 No analysis performed.
             </div>
+            <div id="ingredient_error" class="text-danger">
+                Ingredient parsing error.
+                Try with different names / quantities and analyse again if you are unhappy.
+                Ensure all ingredients are on seperate lines.
+            </div>
+
+            {% include 'macro_mate/ingredient_table.html' with table_id="ingredient_table" table_title="Ingredients Detected" %}
+
+            {% include 'macro_mate/nutrition_table.html' with table_id="nutrient_table" table_title="Nutritional Analysis" calories_quantity="4" calories_unit="kcal" fat_quantity="3000" fat_unit="g" protein_quantity="3000" protein_unit="g" carbs_quantity="3402" carbs_unit="g"%}
+
+
+
         </div>
 
 
