@@ -1,60 +1,55 @@
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
-from django.urls import reverse
-from django.shortcuts import redirect
-from macro_mate.forms import UserForm, UserProfileForm, MealForm
+# Decorators
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+# JSON Response for API calls
 from django.http import HttpResponse
-from django.urls import reverse
-from django.shortcuts import redirect
-from macro_mate.forms import UserForm, UserProfileForm, MealForm
+from django.http import JsonResponse
 
 # View for view classes
 from django.views import View
-# Decorators
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 
 # Import taggit models to get all tags
 from taggit.models import Tag
-# JSON Response for API calls
-from django.http import JsonResponse
 
 
 # Tags API
 # --------
 # Used for AJAX calls that populate the suggestion box when using tags
 
+# API queries:
+# max_results -> the maximum number of results to return
+# contains -> a search string which searches for tags containing it
+# API returns:
+# a json list
 class TagsAPI(View):
+    """ An API for viewing the tags contained in the macro_mate app"""
     @method_decorator(login_required)
     def get(self, request):
         query_set = request.GET
 
         max_results = query_set.get('max_results', 0)
-        search_string = query_set.get('search_string', None)
+        contains = query_set.get('contains', None)
+
         try:
-            results = self.get_tag_list(max_results=int(max_results),
-                                        starts_with=search_string)
+            tag_list = self.get_tag_list(max_results=int(max_results),
+                                         contains=contains)
         except ValueError:
             return HttpResponse(-1)
 
-        tag_list = [tag.name for tag in results]
-       # safe=False because not a dictionary
+        # safe=False because not a dictionary
         return JsonResponse(tag_list, safe=False)
 
-    # Helper function inside class
-    def get_tag_list(self, max_results=0, starts_with=''):
+    def get_tag_list(self, max_results: int = 0, contains: str = ''):
         """Returns a list of tags stored in the Tag database model"""
-        tag_list = []
-        if starts_with:
-            tag_list = Tag.objects.filter(name__istartswith=starts_with)
+        if contains:
+            results = Tag.objects.filter(name__icontains=contains)
         else:
-            tag_list = Tag.objects.all()
+            results = Tag.objects.all()
+        # if max_results is defined
         if max_results > 0:
-            if len(tag_list) > max_results:
-                tag_list = tag_list[:max_results]
-        # Ensure a list response from query set for JSON
-        return list(tag_list)
+            # trim list
+            if len(results) > max_results:
+                results = results[:max_results]
+        # Return a list of tag names for json
+        return [tag.name for tag in results]
