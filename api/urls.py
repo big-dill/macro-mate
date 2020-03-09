@@ -8,5 +8,6 @@ app_name = 'api'
 # API Ajax Patterns
 urlpatterns = [
     path('tags/', views.TagsAPI.as_view(), name='tags'),
+    path('nutrition/', views.NutritionAPI.as_view(), name='nutrition')
 
 ]
