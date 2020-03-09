@@ -1,5 +1,7 @@
 {% extends 'macro_mate/base.html' %}
 {% load staticfiles %}
+{% comment %} Add custom filters for form CSS below {% endcomment %}
+{% load filters %}
 
 {% comment %} Include CSS and JS in BASE {% endcomment %}
 {% block css %}
@@ -21,21 +23,72 @@ Add New Meal
 {% endblock %}
 
 {% block body_block %}
-<div>
-    <form id="meal_form" method="post" action="/macro_mate/add_meal/">
-        {% csrf_token %}
+<form id="meal_form" method="post" action="/macro_mate/add_meal/">
+    <div class="row">
 
-        {% comment %} Form fields will be on the right, with analysis window {% endcomment %}
-        {% for hidden in form.hidden_fields %}
-        {{ hidden }}
-        {% endfor %}
-        {% for field in form.visible_fields %}
-        {{ field.errors }}
-        {{ field.help_text }}
-        {{ field }}
-        {% endfor %}
-        <input type="submit" name="submit" value="Add Meal" />
-    </form>
-</div>
+
+        <div class="col-12 col-md-6">
+            <h2 class="pb-2 my-4 mx-2 border-bottom">
+                Information
+            </h2>
+
+
+            {% csrf_token %}
+
+            {% comment %} Form fields will be on the right, with analysis window {% endcomment %}
+            {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+            {% endfor %}
+
+            {% for field in form.visible_fields %}
+
+            {% comment %} Don't include image field here {% endcomment %}
+            {% if field.html_name != 'image' %}
+
+            <div class="form-group ">
+                {% for error in field.errors %}
+                <div>
+                    <span class="text-danger"> {{error}} </span>
+                </div>
+                {% endfor %}
+                {{field.label}}
+
+                {% if field.html_name != 'categories' %}
+                {{ field|addcss:'form-control' }}
+                {% else %}
+                {{field|addcss:'list-unstyled'}}
+                {% endif %}
+
+                {% if field.help_text %}
+                <small id="emailHelp" class="form-text text-muted"> {{ field.help_text }} </small>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+
+
+        </div>
+        <div class="col-12 col-md-6">
+            <h2 class="pb-2 my-4 mx-2 border-bottom">
+                Image
+            </h2>
+            <img id="image_holder" src="{% static 'images/placeholder.png' %}" class="img-fluid" alt="Responsive image">
+            {{form.image}}
+            <h2 class="pb-2 my-4 mx-2 border-bottom">
+                Nutritional Analysis
+            </h2>
+            <div>
+                No analysis performed.
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <input class="btn btn-success" type="submit" name="submit" value="Add Meal" />
+    </div>
+
+</form>
+
 
 {% endblock %}

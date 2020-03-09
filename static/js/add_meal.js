@@ -24,3 +24,17 @@ $.get("/api/tags").done(function(response) {
     callback(response);
   });
 });
+
+// Update image field with preview if selected for upload
+$("#id_image").change(function upload_img(e) {
+  const input = e.target;
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      $("#image_holder").attr("src", e.target.result);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
+});

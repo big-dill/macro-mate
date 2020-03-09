@@ -1,7 +1,7 @@
 from django.contrib import admin
 from macro_mate.models import UserProfile
 
-from macro_mate.models import Meal
+from macro_mate.models import Meal, MealCategory
 # Register your models here.
 
 
@@ -11,5 +11,4 @@ class PageAdmin(admin.ModelAdmin):
 
 class CategoryAdmin():
     admin.site.register(UserProfile)
-
     admin.site.register(Meal)
