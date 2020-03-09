@@ -8,7 +8,8 @@ from macro_mate.forms import UserForm, UserProfileForm, MealForm
 # decorator
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+# JSON for cleaning meal input
+import json
 
 
 def index(request):
@@ -98,10 +99,24 @@ def add_meal(request):
             if user:
                 page = form.save(commit=False)
                 page.owner = user.userprofile
-                page.save()
+                page.save()  # See below comments
+
+                # TAGIFY / TAGGIT "HACKS"
+                # --------------------
+                # Because of how Tagify.js adds values to inputs (rubbish software, change later...)
+                # need to parse the json on the server.
+                # https://github.com/yairEO/tagify/issues/197
+
+                tag_json = json.loads(form['tags'].value())
+                tag_list = [tag['value'] for tag in tag_json]
+
+                # Save is done first because need primary key for many_many using taggit
+                # https://github.com/jazzband/django-taggit/issues/527
+                page.tags.set(*tag_list)
 
                 # Redirect to meal viewer
                 return redirect(reverse('macro_mate:index'))
+
         else:
             print(form.errors)
 
