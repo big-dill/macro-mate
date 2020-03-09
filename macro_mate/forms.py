@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from macro_mate.models import UserProfile, Meal
 from multiselectfield import MultiSelectFormField
+from taggit.forms import *
 
 
 class UserForm(forms.ModelForm):
@@ -26,6 +27,9 @@ class MealForm(forms.ModelForm):
 
     servings = forms.IntegerField(min_value=0,
                                   help_text="Please enter servings")
+
+    # Create an ID for javascript with 'TAGS'
+    tags = TagField()
 
     # Hidden nutrition fields to be set with javascript following AJAX reply
     # Some initial data provided for 'sanitising'

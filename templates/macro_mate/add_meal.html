@@ -1,11 +1,27 @@
 {% extends 'macro_mate/base.html' %}
 {% load staticfiles %}
 
+{% comment %} Include CSS and JS in BASE {% endcomment %}
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.6.2/dist/tagify.min.css">
+{% endblock %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.6.2/dist/tagify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.6.2/dist/tagify.polyfills.min.js"></script>
+<script src="{% static 'js/add_meal.js' %}"></script>
+<script>
+    // Run the code in js/add_meal.js here, but so we can use the URL for the AJAX
+    const MAX_RESULTS = 10;
+    addTagify("{% url 'api:tags' %}", MAX_RESULTS)
+</script>
+{% endblock %}
+
 {% block title_block %}
 Add Meal
 {% endblock %}
 
-{% block page_header_block %}
+{% block header_block %}
 Add New Meal
 {% endblock %}
 
@@ -13,6 +29,8 @@ Add New Meal
 <div>
     <form id="meal_form" method="post" action="/macro_mate/add_meal/">
         {% csrf_token %}
+
+        {% comment %} Form fields will be on the right, with analysis window {% endcomment %}
         {% for hidden in form.hidden_fields %}
         {{ hidden }}
         {% endfor %}
