@@ -91,7 +91,7 @@ class Meal(models.Model):
     # Tags
     # ----
     # Uses TaggableManager, which can add tags.
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     servings = models.IntegerField(default=1)
 

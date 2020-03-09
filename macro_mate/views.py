@@ -99,20 +99,12 @@ def add_meal(request):
             if user:
                 page = form.save(commit=False)
                 page.owner = user.userprofile
-                page.save()  # See below comments
+                page.save()  # save before adding tags to taggit
 
-                # TAGIFY / TAGGIT "HACKS"
-                # --------------------
-                # Because of how Tagify.js adds values to inputs (rubbish software, change later...)
-                # need to parse the json on the server.
-                # https://github.com/yairEO/tagify/issues/197
-
-                tag_json = json.loads(form['tags'].value())
-                tag_list = [tag['value'] for tag in tag_json]
-
-                # Save is done first because need primary key for many_many using taggit
-                # https://github.com/jazzband/django-taggit/issues/527
-                page.tags.set(*tag_list)
+                # add tags from text
+                # needed for custom form element from my understanding...
+                tags = form.cleaned_data['tags']
+                page.tags.set(*tags)
 
                 # Redirect to meal viewer
                 return redirect(reverse('macro_mate:index'))
@@ -120,5 +112,6 @@ def add_meal(request):
         else:
             print(form.errors)
 
+    # Provide list of tags to the view
     context_dict = {'form': form}
     return render(request, 'macro_mate/add_meal.html', context=context_dict)

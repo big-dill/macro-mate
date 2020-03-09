@@ -16,6 +16,8 @@ from taggit.models import Tag
 # Tags API
 # --------
 # Used for AJAX calls that populate the suggestion box when using tags
+# Some of the query methods are redundant after changing javascript library,
+# but left them in...
 
 # API queries:
 # max_results -> the maximum number of results to return
@@ -52,4 +54,26 @@ class TagsAPI(View):
             if len(results) > max_results:
                 results = results[:max_results]
         # Return a list of tag names for json
-        return [tag.name for tag in results]
+        return [{'name': tag.name} for tag in results]
+
+
+# Nutrition API
+# --------
+# Used for AJAX calls that analyse an ingredient list.
+#
+# API query:
+# title -> recipe title
+# ingr -> an array of string ingredients
+# yield -> servings
+
+# API returns:
+# a heavily chopped up json response from
+# https://developer.edamam.com/edamam-docs-nutrition-api
+
+
+class NutritionAPI(View):
+    """ Calls the Edamam API on the server, to prevent API key being exposed """
+
+    @method_decorator(login_required)
+    def get(self, request):
+        return HttpResponse(-1)

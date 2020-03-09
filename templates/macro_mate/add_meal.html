@@ -3,17 +3,13 @@
 
 {% comment %} Include CSS and JS in BASE {% endcomment %}
 {% block css %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.6.2/dist/tagify.min.css">
+<link rel="stylesheet" href="{% static 'css/selectize.js/selectize.css' %}">
+<link rel="stylesheet" href="{% static 'css/selectize.js/selectize.bootstrap3.css' %}">
 {% endblock %}
 
 {% block js %}
-<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.6.2/dist/tagify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.6.2/dist/tagify.polyfills.min.js"></script>
+<script src="{% static 'js/selectize.js/selectize.min.js' %}"></script>
 <script src="{% static 'js/add_meal.js' %}"></script>
-<script>
-    // Hook the tag script in js/add_meal.js here so we can use the URL for the AJAX
-    addTagify("{% url 'api:tags' %}")
-</script>
 {% endblock %}
 
 {% block title_block %}

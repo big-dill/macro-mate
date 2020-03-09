@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from macro_mate.models import UserProfile, Meal
 from multiselectfield import MultiSelectFormField
+from taggit.models import Tag
+from django.contrib.contenttypes.models import ContentType
 from taggit.forms import *
 
 
@@ -21,15 +23,25 @@ class UserProfileForm(forms.ModelForm):
 
 class MealForm(forms.ModelForm):
     name = forms.CharField(max_length=Meal.NAME_MAX_LENGTH,
-                           help_text="Please enter the meal name")
+                           help_text="Meal Name:")
+
     url = forms.URLField(max_length=Meal.URL_MAX_LENGTH,
-                         help_text="Please enter the URL of the meal's recipe.")
+                         required=False,
+                         help_text="Recipe Link:")
+
+    categories = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        required=True,
+        choices=Meal.MEAL_CATEGORIES,
+        help_text="Categories:")
 
     servings = forms.IntegerField(min_value=0,
-                                  help_text="Please enter servings")
+                                  initial=1,
+                                  help_text="# Servings:")
 
-    # Create an ID for javascript with 'TAGS'
-    tags = TagField()
+    tags = TagField(widget=forms.TextInput(attrs={'placeholder': 'Add tags'}),
+                    required=False,
+                    help_text="Add tags:")
 
     # Hidden nutrition fields to be set with javascript following AJAX reply
     # Some initial data provided for 'sanitising'
