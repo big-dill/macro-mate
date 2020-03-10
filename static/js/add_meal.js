@@ -95,7 +95,8 @@ function analyseIngredientsSubmit() {
   const ingredients = $("#id_ingredients").val();
   const ingredientList = ingredients.split("\n");
 
-  $.get("/api/nutrition", {
+  $.get({
+    url: "/api/nutrition",
     data: {
       title: title,
       servings: servings,
@@ -109,4 +110,8 @@ function analyseIngredientsResponse(response) {
     '<i class="fa fa-refresh" aria-hidden="true"></i> Analyse'
   );
   $("#analyse").prop("disabled", false);
+
+  // Populate
+
+  // Populate hidden fields with response
 }

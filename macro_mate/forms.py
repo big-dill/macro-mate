@@ -30,7 +30,8 @@ class MealForm(forms.ModelForm):
                          label="Recipe Link:",
                          help_text="Write your link to an external recipe here.")
 
-    categories = forms.ModelMultipleChoiceField(queryset=MealCategory.objects,
+    categories = forms.ModelMultipleChoiceField(label="Categories:",
+                                                queryset=MealCategory.objects,
                                                 widget=forms.CheckboxSelectMultiple(),
                                                 required=True)
 

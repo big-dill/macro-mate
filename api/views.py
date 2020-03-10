@@ -12,7 +12,10 @@ from django.views import View
 # Import taggit models to get all tags
 from taggit.models import Tag
 
+from macro_mate_project.settings import NUTRITION_API_ID, NUTRITION_API_KEY
+
 # Requests for external API call
+import json
 import requests
 
 
@@ -66,8 +69,8 @@ class TagsAPI(View):
 #
 # API query:
 # title -> recipe title
-# ingr -> an array of string ingredients
-# yield -> servings
+# ingredients[] -> an array of string ingredients
+# servings -> servings
 
 # API returns:
 # a heavily chopped up json response from
@@ -77,21 +80,54 @@ class TagsAPI(View):
 class NutritionAPI(View):
     """ Calls the Edamam API on the server, to prevent API key being exposed """
 
+    TOTAL_NUTRIENTS_FIELD = 'totalNutrients'
+
+    LABEL_LABEL = 'label'
+    SERVINGS_LABEL = 'yield'
+    CALORIES_LABEL = 'ENERC_KCAL'
+    FAT_LABEL = 'FAT'
+    CARBS_LABEL = 'CHOCDF'
+    PROTEIN_LABEL = 'PROCNT'
+
     @method_decorator(login_required)
     def get(self, request):
-        #TODO: edit
-        # endpoint = 'https://od-api.oxforddictionaries.com/api/v1/entries/{source_lang}/{word_id}'
-        # url = endpoint.format(source_lang='en', word_id=word)
-        # headers = {'app_id': settings.OXFORD_APP_ID,
-        #            'app_key': settings.OXFORD_APP_KEY}
-        # response = requests.get(url, headers=headers)
-        # if response.status_code == 200:  # SUCCESS
-        #     result = response.json()
-        #     result['success'] = True
-        # else:
-        #     result['success'] = False
-        #     if response.status_code == 404:  # NOT FOUND
-        #         result['message'] = 'No entry found for "%s"' % word
-        #     else:
-        #         result['message'] = 'The Oxford API is not available at the moment. Please try again later.'
-        return HttpResponse()
+        query_set = request.GET
+        # Extract values
+        title = query_set.get('title', '')
+        ingr = query_set.getlist('ingredients[]')
+        servings = query_set.get('servings', '1')
+
+        endpoint = 'https://api.edamam.com/api/nutrition-details'
+        payload = {
+            'app_id': NUTRITION_API_ID,
+            'app_key': NUTRITION_API_KEY
+        }
+        data = {
+            'title': title,
+            'ingr': ingr,
+            'yield': servings
+        }
+
+        r = requests.post(endpoint, params=payload, json=data)
+
+        # Parse the response for our own app
+        response_dict = r.json()
+
+        nutrients = response_dict[self.TOTAL_NUTRIENTS_FIELD]
+
+        parsed_response = {
+            'servings': response_dict[self.SERVINGS_LABEL],
+            'calories': nutrients[self.CALORIES_LABEL],
+            'fat': nutrients[self.FAT_LABEL],
+            'carbs': nutrients[self.CARBS_LABEL],
+            'protein': nutrients[self.PROTEIN_LABEL],
+        }
+
+        # delete superfulous labels in response
+        for field in parsed_response:
+            if isinstance(field, dict):
+                field.pop(self.LABEL_LABEL, None)
+
+        print(parsed_response)
+
+        return HttpResponse(json.dumps(parsed_response), content_type="application/json")

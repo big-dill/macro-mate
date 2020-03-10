@@ -3,7 +3,7 @@
 {% comment %} Add custom filters for form CSS below {% endcomment %}
 {% load filters %}
 
-{% comment %} Include CSS and JS in BASE {% endcomment %}
+{% comment %} Include CSS and JS specific to this page (selectize.js / add_meal) {% endcomment %}
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/selectize.js/selectize.css' %}">
 <link rel="stylesheet" href="{% static 'css/selectize.js/selectize.bootstrap3.css' %}">
@@ -14,75 +14,90 @@
 <script src="{% static 'js/add_meal.js' %}"></script>
 {% endblock %}
 
+{% comment %} Page Title {% endcomment %}
 {% block title_block %}
 Add Meal
 {% endblock %}
 
+{% comment %} Page Header {% endcomment %}
 {% block header_block %}
 Add New Meal
 {% endblock %}
 
 {% block body_block %}
+
+{% comment %} Form encapsulates whole view. Responsive layout. {% endcomment %}
 <form id="meal_form" method="post" action="/macro_mate/add_meal/">
+    {% csrf_token %}
+
+    {% comment %} Hidden form fields {% endcomment %}
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+
     <div class="row">
-
-
+        {% comment %} Form on left, except Image {% endcomment %}
         <div class="col-12 col-md-6">
             <h2 class="pb-2 my-4 mx-2 border-bottom">
                 Information
             </h2>
 
-
-            {% csrf_token %}
-
-            {% comment %} Form fields will be on the right, with analysis window {% endcomment %}
-            {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-            {% endfor %}
-
+            {% comment %} Loop through fields, except image {% endcomment %}
             {% for field in form.visible_fields %}
-
-            {% comment %} Don't include image field here {% endcomment %}
             {% if field.html_name != 'image' %}
 
             <div class="form-group ">
+
                 {% for error in field.errors %}
                 <div>
                     <span class="text-danger"> {{error}} </span>
                 </div>
                 {% endfor %}
+
                 {{field.label}}
 
-                {% if field.html_name != 'categories' %}
-                {{ field|addcss:'form-control' }}
+                {% comment %} Custom css for categories {% endcomment %}
+                {% if field.html_name == 'categories' %}
+
+                <div class="mt-1">
+                    {{field|addcss:'list-unstyled form-check-inline'}}
+                </div>
+
                 {% else %}
-                {{field|addcss:'list-unstyled form-check-inline'}}
+
+                {{ field|addcss:'form-control' }}
+
                 {% endif %}
 
+                {% comment %} Help text with small formatting {% endcomment %}
                 {% if field.help_text %}
                 <small id="emailHelp" class="form-text text-muted"> {{ field.help_text }} </small>
                 {% endif %}
+
             </div>
+
             {% endif %}
             {% endfor %}
 
-
         </div>
+
+        {% comment %} Image and analysis on right {% endcomment %}
         <div class="col-12 col-md-6">
             <h2 class="pb-2 my-4 mx-2 border-bottom">
                 Image
             </h2>
+
             <img id="image_holder" src="{% static 'images/placeholder.png' %}" class="img-fluid" alt="Responsive image">
-            <div class="form-group ">
-                {{form.image}}
-            </div>
+            <div class="form-group "> {{form.image}} </div>
 
             <h2 class="pb-2 my-4 mx-2 border-bottom">
                 Nutritional Analysis
             </h2>
+            {% comment %} Heavily controlled by JS (see add_meal.js) {% endcomment %}
             <div id="no_analysis_message">
                 No analysis performed.
             </div>
+
             <div id="ingredient_error" class="text-danger">
                 Ingredient parsing error.
                 Try with different names / quantities and analyse again if you are unhappy.
@@ -97,21 +112,19 @@ Add New Meal
                 {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" calories_quantity="4" calories_unit="kcal" fat_quantity="3000" fat_unit="g" protein_quantity="3000" protein_unit="g" carbs_quantity="3402" carbs_unit="g"%}
             </div>
 
-
-
-
         </div>
 
-
     </div>
+
+    {% comment %} Buttons for form - Again, heavily reliant on JS {% endcomment %}
     <div class="row my-4">
         <button name="analyse" id="analyse" class="btn btn-lg btn-block btn-success mr-2 ml-auto" type="button"
             value="Analyse">
             <i class="fa fa-refresh" aria-hidden="true"></i> Analyse </button>
+
         <input id="submit" class="btn btn-lg btn-block btn-primary" type="submit" name="submit" value="Add Meal" />
     </div>
 
 </form>
-
 
 {% endblock %}

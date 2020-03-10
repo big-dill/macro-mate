@@ -35,6 +35,9 @@ with open('edamam.key') as f:
     edamamKey = f.read().strip()
 NUTRITION_API_KEY = edamamKey
 
+# Nutrition analysis ID
+NUTRITION_API_ID = 'cb0c4b16'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
