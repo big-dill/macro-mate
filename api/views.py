@@ -2,7 +2,7 @@
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-# JSON Response for API calls
+from http import HTTPStatus
 from django.http import HttpResponse
 from django.http import JsonResponse
 
@@ -55,8 +55,8 @@ class TagsAPI(View):
         contains = query_set.get('contains', None)
 
         try:
-            tag_list = self.get_tag_list(max_results=int(max_results),
-                                         contains=contains)
+            tag_list = get_tag_list(max_results=int(max_results),
+                                    contains=contains)
         except ValueError:
             return HttpResponse(-1)
 
@@ -84,6 +84,11 @@ class TagsAPI(View):
     # unit: STRING
 # },
 # ... same for: fat, protein, carbs
+
+
+class HttpResponseLowQualityIngredients(HttpResponse):
+    """Create a 555 response that matches edemam's own"""
+    status_code = 555
 
 
 class NutritionAPI(View):
@@ -117,10 +122,18 @@ class NutritionAPI(View):
             'yield': servings
         }
 
-        r = requests.post(endpoint, params=payload, json=data)
+        try:
+            r = requests.post(endpoint, params=payload, json=data)
+        except requests.exceptions.HTTPError as err:
+            # If there's an error, return to the client to handle it
+            return r
 
         # Parse the response for our own app
         response_dict = r.json()
+
+        # Throw a custom error if edemam says our ingredients are rubbish
+        if response_dict.get('error', False):
+            return HttpResponseLowQualityIngredients()
 
         nutrients = response_dict[self.TOTAL_NUTRIENTS_FIELD]
 

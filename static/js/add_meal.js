@@ -1,4 +1,23 @@
+function enableAnalysisButton(isEnabled) {
+  $("#analyse").attr("disabled", !isEnabled);
+}
+
+function setAnalysisButtonLoading(isLoading) {
+  if (isLoading) {
+    enableAnalysisButton(false);
+    $("#analyse").html(
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
+    );
+  } else {
+    enableAnalysisButton(true);
+    $("#analyse").html(
+      '<i class="fa fa-refresh" aria-hidden="true"></i> Analyse'
+    );
+  }
+}
+
 function hideAnalysis() {
+  $("#analysis_error").hide();
   $("#no_analysis_message").show();
   $("#nutrition_table").hide();
 }
@@ -11,7 +30,8 @@ function showAnalysis(hasError) {
 
 function setNutritionValue(key, value) {
   $("#id_nutrition_table_" + key + "_quantity").text(
-    value.quantity + value.unit
+    // Display with 2 decimal points
+    value.quantity.toFixed(2) + value.unit
   );
 }
 
@@ -25,11 +45,6 @@ function analyseIngredientsResponse(response) {
   const nutrition = response.nutrition;
   const servings = response.servings;
 
-  $("#analyse").html(
-    '<i class="fa fa-refresh" aria-hidden="true"></i> Analyse'
-  );
-  $("#analyse").prop("disabled", false);
-
   $.each(nutrition, function(key, value) {
     setNutritionValue(key, value);
     setHiddenNutritionField(key, value);
@@ -40,12 +55,41 @@ function analyseIngredientsResponse(response) {
   showAnalysis(false);
 }
 
-function analyseIngredientsSubmit() {
-  // Set loading on button
-  $("#analyse").html(
-    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...'
+function displayPoorServingError() {
+  $("#analysis_error")
+    .text(
+      "Check your ingredients, they may not be appropriate for portions, or be poorly written."
+    )
+    .show();
+}
+
+function displayGenericError() {
+  $("#analysis_error")
+    .text(
+      "A network error has occured with the Edamam API, please try again later"
+    )
+    .show();
+}
+
+function handleIngredientsSubmitError(xhr, status, error) {
+  // error handling
+  if (xhr.status === 555) {
+    displayPoorServingError();
+  } else {
+    displayGenericError();
+  }
+  // Scroll to error
+  $("html, body").animate(
+    { scrollTop: $("#analysis_error").offset().top - 5 },
+    20
   );
-  $("#analyse").prop("disabled", true);
+}
+
+function analyseIngredientsSubmit() {
+  // Remove error messages
+  $("#analysis_error").hide();
+
+  setAnalysisButtonLoading(true);
 
   const title = $("#id_name").val();
   const servings = $("#id_servings").val();
@@ -60,7 +104,12 @@ function analyseIngredientsSubmit() {
       servings,
       ingredients,
     },
-  }).done(analyseIngredientsResponse);
+  })
+    .fail(handleIngredientsSubmitError)
+    .done(analyseIngredientsResponse)
+    .always(function() {
+      setAnalysisButtonLoading(false);
+    });
 }
 
 function setupTags() {
@@ -93,7 +142,7 @@ function setupTags() {
 
 function setupAnalyseButton() {
   // Disable if no ingredients
-  $("#analyse").attr("disabled", !$("#id_ingredients").val());
+  enableAnalysisButton($("#id_ingredients").val());
 
   // Enable if ingredients exist
   $("#id_ingredients").keyup(function() {

@@ -106,6 +106,11 @@ Add New Meal
                 No analysis performed.
             </div>
 
+            {% comment %} Display error from request {% endcomment %}
+            <div id="analysis_error" class="text-danger">
+
+            </div>
+
             <div id="nutrition_table">
                 {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" calories_quantity="4" calories_unit="kcal" fat_quantity="3000" fat_unit="g" protein_quantity="3000" protein_unit="g" carbs_quantity="3402" carbs_unit="g"%}
             </div>
