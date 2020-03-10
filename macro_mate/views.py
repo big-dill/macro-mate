@@ -3,10 +3,11 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect
-from macro_mate.forms import UserForm, UserProfileForm
+from macro_mate.forms import UserForm, UserProfileForm, MealForm
 
-# Create your views here.
 from macro_mate.models import Meal
+# decorator
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -101,3 +102,42 @@ def meal(request, meal_id_slug):
     except Meal.DoesNotExist:
         context_dict['meal'] = None
     return render(request, 'macro_mate/meal.html', context=context_dict)
+
+
+@login_required
+def add_meal(request):
+
+    form = MealForm()
+
+    if request.method == 'POST':
+        form = MealForm(request.POST, request.FILES)
+
+        # Get the user, no need to validate because @login_required
+        user = request.user
+
+        if form.is_valid():
+            if user:
+                meal = form.save(commit=False)
+                meal.owner = user.userprofile
+
+                meal.image = form.cleaned_data['image']
+                meal.save()  # save before adding tags to taggit
+
+                # add tags from text
+                # needed for custom form element from my understanding...
+                tags = form.cleaned_data['tags']
+                meal.tags.set(*tags)
+
+                # add categories
+                categories = form.cleaned_data['categories']
+                meal.categories.set(categories)
+
+                # Redirect to meal viewer
+                return redirect(reverse('macro_mate:index'))
+
+        else:
+            print(form.errors)
+
+    # Provide list of tags to the view
+    context_dict = {'form': form}
+    return render(request, 'macro_mate/add_meal.html', context=context_dict)

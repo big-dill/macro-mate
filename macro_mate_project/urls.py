@@ -26,5 +26,6 @@ urlpatterns = [
     path('macro_mate/', include('macro_mate.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
+    path('api/', include('api.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Above line allows serving static content from MEDIA URL

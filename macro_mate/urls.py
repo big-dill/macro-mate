@@ -1,6 +1,7 @@
 
 from django.urls import path
 from macro_mate import views
+
 app_name = 'macro_mate'
 
 urlpatterns = [

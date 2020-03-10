@@ -2,6 +2,8 @@
 # But a vscode task is setup to do run this
 # cmd-shift-p > Tasks:Run Task > populate-db
 
+
+
 import lorem
 import random
 import django
@@ -12,8 +14,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
+from macro_mate.models import Meal, MealCategory
 from django.contrib.auth.models import User
-from macro_mate.models import Meal
 
 MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
@@ -22,8 +24,7 @@ MAX_NUTRIENT_QUANTITY = 4000
 def add_meal(owner, name, url, tags, ingredients):
     # randomly assign a list
     m = Meal.objects.get_or_create(owner=owner, name=name, url=url)[0]
-    # randomly add categories
-    m.categories = get_random_meal_categories()
+
     # randomly add tags (change list to individual args with *)
     m.tags.add(*tags)
     # add random serving
@@ -37,8 +38,10 @@ def add_meal(owner, name, url, tags, ingredients):
     m.fat_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
     m.protein_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
     m.carbs_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
-
     m.save()
+
+    # randomly add categories after save (as many to many field)
+    m.categories.set(get_random_meal_categories())
 
     return m
 
@@ -48,12 +51,9 @@ def get_char_joined_string(collection, char):
 
 
 def get_random_meal_categories():
-    selection = get_random_sample(Meal.MEAL_CATEGORIES)
-    # get first value from tuples in MEAL_CATEGORIES for db population
-    selection = [s[0] for s in selection]
-    # create comma separated list from first value to store in db
-    # as MultiSelectField stores a comma separated char
-    return get_char_joined_string(selection, ',')
+    selection = get_random_sample(list(MealCategory.objects.all()))
+    print(selection)
+    return selection
 
 
 def get_random_sample(collection):
@@ -114,6 +114,11 @@ def populate():
 
     # Delete all existing users that aren't superusers
     User.objects.filter(is_superuser=False).delete()
+
+    # Initialise MealCategories
+    for cat in MealCategory.MEAL_CATEGORIES:
+        c = MealCategory.objects.get_or_create(category=cat)[0]
+        c.save()
 
     for name in users:
         user = add_user(name)

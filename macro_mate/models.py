@@ -41,6 +41,28 @@ def save_user_profile(sender, instance, **kwargs):
 # TODO: Create rating functionality for meal
 # TODO: Create comment class for meal
 
+# THIS MUST BE POPULATED WHEN DEPLOYING APP
+class MealCategory(models.Model):
+    """A model for holding a required category for a meal, e.g. breakfast"""
+    # Meal Category Choices
+    # ---------------------
+    # Uses MultiSelectField. Constants used to programatically create in populate script
+
+    CATEGORY_MAX_LENGTH = 12
+
+    BREAKFAST = "Breakfast"
+    LUNCH = "Lunch"
+    DINNER = "Dinner"
+    SNACK = "Snack"
+
+    MEAL_CATEGORIES = [BREAKFAST, LUNCH, DINNER, SNACK]
+
+    category = models.CharField(max_length=CATEGORY_MAX_LENGTH,
+                                unique=True)
+
+    def __str__(self):
+        return self.category
+
 
 class Meal(models.Model):
 
@@ -53,19 +75,10 @@ class Meal(models.Model):
     URL_MAX_LENGTH = 255
     UNIT_MAX_LENGTH = 12
 
-    # Meal Category Choices
-    # ---------------------
-    # Uses MultiSelectField. Constants used to programatically create in populate script
-
-    BREAKFAST = 1
-    LUNCH = 2
-    DINNER = 3
-    SNACK = 4
-
-    MEAL_CATEGORIES = ((BREAKFAST, 'Breakfast'),
-                       (LUNCH, 'Lunch'),
-                       (DINNER, 'Dinner'),
-                       (SNACK, 'Snack'))
+    CALORIE_DEFAULT_UNIT = 'kcal'
+    FAT_DEFAULT_UNIT = 'g'
+    PROTEIN_DEFAULT_UNIT = 'g'
+    CARBS_DEFAULT_UNIT = 'g'
 
     # Reference Fields
     # ----------------
@@ -81,15 +94,13 @@ class Meal(models.Model):
 
     # Categories
     # ----------
-    # Uses MultiSelectField, which stores a comma separated file in database.
-    categories = MultiSelectField(choices=MEAL_CATEGORIES,
-                                  min_choices=1,
-                                  default=BREAKFAST)
+    # This needs to be enforced to have MIN: 1 in the forms field
+    categories = models.ManyToManyField(MealCategory)
 
     # Tags
     # ----
     # Uses TaggableManager, which can add tags.
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     servings = models.IntegerField(default=1)
 
@@ -105,8 +116,9 @@ class Meal(models.Model):
     # ----------------
     # These values are cached from the API, should NOT be visible to user
 
-    calorie_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='kcal')
-    calorie_quantity = models.FloatField(default=0.0)
+    calories_unit = models.CharField(
+        max_length=UNIT_MAX_LENGTH, default='kcal')
+    calories_quantity = models.FloatField(default=0.0)
 
     fat_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='g')
     fat_quantity = models.FloatField(default=0.0)
@@ -116,5 +128,7 @@ class Meal(models.Model):
 
     carbs_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='g')
     carbs_quantity = models.FloatField(default=0.0)
+
+    image = models.ImageField(blank=True)
 
     def __str__(self): return self.name

@@ -11,5 +11,4 @@ class PageAdmin(admin.ModelAdmin):
 
 class CategoryAdmin():
     admin.site.register(UserProfile)
-
     admin.site.register(Meal)
