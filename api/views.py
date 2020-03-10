@@ -2,7 +2,6 @@
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
-from http import HTTPStatus
 from django.http import HttpResponse
 from django.http import JsonResponse
 
@@ -126,6 +125,7 @@ class NutritionAPI(View):
             r = requests.post(endpoint, params=payload, json=data)
         except requests.exceptions.HTTPError as err:
             # If there's an error, return to the client to handle it
+            print(err)
             return r
 
         # Parse the response for our own app
