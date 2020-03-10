@@ -54,29 +54,29 @@ class MealForm(forms.ModelForm):
                             label="Notes:",
                             help_text="Any additional notes for your meal.")
 
-    image = forms.ImageField(allow_empty_file=True)
+    image = forms.ImageField(allow_empty_file=True, required=False)
 
     # Hidden nutrition fields to be set with javascript following AJAX reply
     # Some initial data provided for 'sanitising'
-    calorie_unit = forms.CharField(
+    calories_unit = forms.CharField(
         widget=forms.HiddenInput(), initial=Meal.CALORIE_DEFAULT_UNIT)
-    calorie_quantity = forms.FloatField(
+    calories_quantity = forms.FloatField(
         widget=forms.HiddenInput(), min_value=0, initial=0)
 
     fat_unit = forms.CharField(
         widget=forms.HiddenInput(), initial=Meal.FAT_DEFAULT_UNIT)
     fat_quantity = forms.FloatField(
-        widget=forms.HiddenInput(), min_value=0, initial=0)
+        widget=forms.HiddenInput(), min_value=0)
 
     protein_unit = forms.CharField(
         widget=forms.HiddenInput(), initial=Meal.PROTEIN_DEFAULT_UNIT)
     protein_quantity = forms.FloatField(
-        widget=forms.HiddenInput(), min_value=0, initial=0)
+        widget=forms.HiddenInput(), min_value=0)
 
     carbs_unit = forms.CharField(
         widget=forms.HiddenInput(), initial=Meal.CARBS_DEFAULT_UNIT)
     carbs_quantity = forms.FloatField(
-        widget=forms.HiddenInput(), min_value=0, initial=0)
+        widget=forms.HiddenInput(), min_value=0)
 
     # It can go wrong here...
     # This is always added

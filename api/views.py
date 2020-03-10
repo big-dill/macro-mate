@@ -75,6 +75,14 @@ class TagsAPI(View):
 # API returns:
 # a heavily chopped up json response from
 # https://developer.edamam.com/edamam-docs-nutrition-api
+# {
+# servings: NUMBER,
+# calories: {
+    # label: STRING
+    # quantity: NUMBER
+    # unit: STRING
+# },
+# ... same for: fat, protein, carbs
 
 
 class NutritionAPI(View):
@@ -117,10 +125,12 @@ class NutritionAPI(View):
 
         parsed_response = {
             'servings': response_dict[self.SERVINGS_LABEL],
-            'calories': nutrients[self.CALORIES_LABEL],
-            'fat': nutrients[self.FAT_LABEL],
-            'carbs': nutrients[self.CARBS_LABEL],
-            'protein': nutrients[self.PROTEIN_LABEL],
+            'nutrition': {
+                'calories': nutrients[self.CALORIES_LABEL],
+                'fat': nutrients[self.FAT_LABEL],
+                'carbs': nutrients[self.CARBS_LABEL],
+                'protein': nutrients[self.PROTEIN_LABEL],
+            }
         }
 
         # delete superfulous labels in response

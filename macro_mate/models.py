@@ -113,8 +113,9 @@ class Meal(models.Model):
     # ----------------
     # These values are cached from the API, should NOT be visible to user
 
-    calorie_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='kcal')
-    calorie_quantity = models.FloatField(default=0.0)
+    calories_unit = models.CharField(
+        max_length=UNIT_MAX_LENGTH, default='kcal')
+    calories_quantity = models.FloatField(default=0.0)
 
     fat_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='g')
     fat_quantity = models.FloatField(default=0.0)
@@ -125,6 +126,6 @@ class Meal(models.Model):
     carbs_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='g')
     carbs_quantity = models.FloatField(default=0.0)
 
-    image = models.ImageField()
+    image = models.ImageField(blank=True)
 
     def __str__(self): return self.name

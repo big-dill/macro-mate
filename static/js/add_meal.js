@@ -1,6 +1,7 @@
 $(document).ready(function() {
   hideAnalysis();
   setupAnalyseButton();
+  setupSubmitButton();
   setupTags();
   setupImage();
 });
@@ -35,7 +36,10 @@ function setupTags() {
 }
 
 function setupAnalyseButton() {
-  $("#analyse").attr("disabled", true);
+  // Disable if no ingredients
+  $("#analyse").attr("disabled", !$("#id_ingredients").val());
+
+  // Enable if ingredients exist
   $("#id_ingredients").keyup(function() {
     if ($(this).val().length != 0) {
       console.log("len is not 0");
@@ -47,6 +51,20 @@ function setupAnalyseButton() {
   });
 
   $("#analyse").click(analyseIngredientsSubmit);
+}
+
+function setupSubmitButton() {
+  // If there has been an analysis (the form was invalid for other reasons...)
+  // then enable.
+  const isAnalysed = ["calories", "fat", "carbs", "protein"].every(function(
+    key
+  ) {
+    return $("#id_" + key + "_quantity").val();
+  });
+
+  console.log(isAnalysed);
+
+  $("#submit").attr("disabled", !isAnalysed);
 }
 
 function setupImage() {
@@ -67,20 +85,13 @@ function setupImage() {
 
 function hideAnalysis() {
   $("#no_analysis_message").show();
-  $("#ingredient_error").hide();
-  $("#ingredient_table").hide();
   $("#nutrition_table").hide();
-  $("#submit").hide();
 }
 
 function showAnalysis(hasError) {
   $("#no_analysis_message").hide();
-  if (hasError) {
-    $("#ingredient_error").show();
-  }
-  $("#ingredient_table").show();
   $("#nutrition_table").show();
-  $("#submit").show();
+  $("#submit").attr("disabled", false);
 }
 
 function analyseIngredientsSubmit() {
@@ -105,11 +116,35 @@ function analyseIngredientsSubmit() {
   }).done(analyseIngredientsResponse);
 }
 
+function setNutritionValue(key, value) {
+  $("#id_nutrition_table_" + key + "_quantity").text(
+    value.quantity + value.unit
+  );
+}
+
+function setHiddenNutritionField(key, value) {
+  $("#id_" + key + "_unit").val(value.unit);
+  $("#id_" + key + "_quantity").val(value.quantity);
+}
+
 function analyseIngredientsResponse(response) {
+  // Destructuring, because ES6 and I'm sick of using jquery.
+  const nutrition = response.nutrition;
+  const servings = response.servings;
+
   $("#analyse").html(
     '<i class="fa fa-refresh" aria-hidden="true"></i> Analyse'
   );
   $("#analyse").prop("disabled", false);
+
+  $.each(nutrition, function(key, value) {
+    setNutritionValue(key, value);
+    setHiddenNutritionField(key, value);
+  });
+
+  $("#id_nutrition_table_servings").text(servings);
+
+  showAnalysis(false);
 
   // Populate
 

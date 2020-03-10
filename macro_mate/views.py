@@ -90,21 +90,27 @@ def add_meal(request):
     form = MealForm()
 
     if request.method == 'POST':
-        form = MealForm(request.POST)
+        form = MealForm(request.POST, request.FILES)
 
         # Get the user, no need to validate because @login_required
         user = request.user
 
         if form.is_valid():
             if user:
-                page = form.save(commit=False)
-                page.owner = user.userprofile
-                page.save()  # save before adding tags to taggit
+                meal = form.save(commit=False)
+                meal.owner = user.userprofile
+
+                meal.image = form.cleaned_data['image']
+                meal.save()  # save before adding tags to taggit
 
                 # add tags from text
                 # needed for custom form element from my understanding...
                 tags = form.cleaned_data['tags']
-                page.tags.set(*tags)
+                meal.tags.set(*tags)
+
+                # add categories
+                categories = form.cleaned_data['categories']
+                meal.categories.set(categories)
 
                 # Redirect to meal viewer
                 return redirect(reverse('macro_mate:index'))
