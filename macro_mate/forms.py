@@ -1,9 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
 from macro_mate.models import UserProfile, Meal, MealCategory
-from multiselectfield import MultiSelectFormField
-from taggit.models import Tag
-from django.contrib.contenttypes.models import ContentType
 from taggit.forms import *
 
 

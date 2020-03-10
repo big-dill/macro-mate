@@ -19,6 +19,21 @@ import json
 import requests
 
 
+def get_tag_list(max_results: int = 0, contains: str = ''):
+    """Returns a list of tags stored in the Tag database model"""
+    if contains:
+        results = Tag.objects.filter(name__icontains=contains)
+    else:
+        results = Tag.objects.all()
+    # if max_results is defined
+    if max_results > 0:
+        # trim list
+        if len(results) > max_results:
+            results = results[:max_results]
+    # Return a list of tag names for json
+    return [{'name': tag.name} for tag in results]
+
+
 # Tags API
 # --------
 # Used for AJAX calls that populate the suggestion box when using tags
@@ -47,20 +62,6 @@ class TagsAPI(View):
 
         # safe=False because not a dictionary
         return JsonResponse(tag_list, safe=False)
-
-    def get_tag_list(self, max_results: int = 0, contains: str = ''):
-        """Returns a list of tags stored in the Tag database model"""
-        if contains:
-            results = Tag.objects.filter(name__icontains=contains)
-        else:
-            results = Tag.objects.all()
-        # if max_results is defined
-        if max_results > 0:
-            # trim list
-            if len(results) > max_results:
-                results = results[:max_results]
-        # Return a list of tag names for json
-        return [{'name': tag.name} for tag in results]
 
 
 # Nutrition API

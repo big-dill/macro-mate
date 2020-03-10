@@ -8,9 +8,6 @@ from macro_mate.forms import UserForm, UserProfileForm, MealForm
 # decorator
 from django.contrib.auth.decorators import login_required
 
-# JSON for cleaning meal input
-import json
-
 
 def index(request):
     context_dict = {}

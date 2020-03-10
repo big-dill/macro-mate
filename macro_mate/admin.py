@@ -1,7 +1,7 @@
 from django.contrib import admin
 from macro_mate.models import UserProfile
 
-from macro_mate.models import Meal, MealCategory
+from macro_mate.models import Meal
 # Register your models here.
 
 
