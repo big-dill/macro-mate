@@ -7,5 +7,7 @@ app_name = 'macro_mate'
 urlpatterns = [
     path('', views.index, name='index'),
     path('add_meal/', views.add_meal, name='add_meal'),
+    path('meals/', views.meals, name='meals'),
+    path('your_meals/', views.your_meals, name="your_meals"),
 
 ]

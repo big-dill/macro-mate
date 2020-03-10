@@ -81,6 +81,13 @@ def meals(request):
     return response
 
 
+def your_meals(request):
+    context_dict = {}
+    response = render(request, 'macro_mate/your_meals.html',
+                      context=context_dict)
+    return response
+
+
 @login_required
 def add_meal(request):
 
