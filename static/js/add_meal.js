@@ -145,8 +145,4 @@ function analyseIngredientsResponse(response) {
   $("#id_nutrition_table_servings").text(servings);
 
   showAnalysis(false);
-
-  // Populate
-
-  // Populate hidden fields with response
 }
