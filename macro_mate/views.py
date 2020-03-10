@@ -86,7 +86,7 @@ def your_meals(request):
     response = render(request, 'macro_mate/your_meals.html', context=context_dict)
     return response
 
-
+# The individual meal page 
 def meal(request, meal_id_slug):
 
     print(Meal.objects.all)
@@ -96,6 +96,7 @@ def meal(request, meal_id_slug):
     try:
         mealget = Meal.objects.get(id=meal_id_slug)
         context_dict['meal'] = mealget
+        context_dict['ingredients'] = mealget.ingredients.split('\n')
 
     except Meal.DoesNotExist:
         context_dict['meal'] = None

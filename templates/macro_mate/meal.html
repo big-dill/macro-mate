@@ -17,5 +17,12 @@
     <p>Fat: {{ meal.fat_quantity }}{{ meal.fat_unit }}</p>
     <p>Carbohydrates: {{ meal.carbs_quantity }}{{ meal.carbs_unit }}</p>
     <p>Protein: {{ meal.protein_quantity }}{{ meal.protein_unit }}</p>
+    </br>
+    <p>Ingredients:</p>
+    <ul>
+    {% for ingredient in ingredients %}
+    <li> {{ ingredient }} </li>
+    </ul> 
+    {% endfor %}
 {% endblock %}
 
