@@ -2,33 +2,78 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    Meals
+Meals
 {% endblock %}
 
 {% block header_block %}
-    <div class="row justify-content-md-center">
-        {{meal.name}}
-    </div>
+<div class="row justify-content-md-center">
+    <div class="column"> {{meal.name}} </div>
+</div>
 {% endblock %}
 
 {% block body_block %}
-    
-    <h4>Tags</h4>
-    {% for tag in meal.tags.all %}
-        <div class="mr-1 badge badge-info">{{ tag }}</div>
-    {% endfor %}
-    <img src="{{meal.image.url}}" alt ="{{meal.name}}" width="500" height="auto" />
-    <h4>Nutritional information</h4>
-    <p>Calories: {{ meal.calorie_quantity }}{{ meal.calorie_unit }}</p>
-    <p>Fat: {{ meal.fat_quantity }}{{ meal.fat_unit }}</p>
-    <p>Carbohydrates: {{ meal.carbs_quantity }}{{ meal.carbs_unit }}</p>
-    <p>Protein: {{ meal.protein_quantity }}{{ meal.protein_unit }}</p>
-    </br>
-    <p>Ingredients:</p>
-    <ul>
-    {% for ingredient in ingredients %}
-    <li> {{ ingredient }} </li>
-    </ul> 
-    {% endfor %}
-{% endblock %}
 
+{% comment %} bootstrap was used to structure the template {% endcomment %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm" id="image_tags">
+            <div class="row justify-content-md-center">
+                <div class="column" id="image">
+                    <img src="{{meal.image.url}}" alt="{{meal.name}}" width="500" height="auto" />
+                </div>
+            </div>
+            <div class="col-sm">
+                <div id="nutrition_table">
+                    {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" calories_quantity="4" calories_unit="kcal" fat_quantity="3000" fat_unit="g" protein_quantity="3000" protein_unit="g" carbs_quantity="3402" carbs_unit="g"%}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm">
+            <div class="row">
+                <h4>Tags</h4>
+                {% for tag in meal.tags.all %}
+                <div class="column">
+                    <div class="mr-1 badge badge-info">{{ tag }}</div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="row">
+                <div class="col-sm" id="meal_info">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Ingredients</h5>
+                                <p class="card-text">
+                                    <ul>
+                                        {% for ingredient in ingredients %}
+                                        <li>{{ ingredient }}</li>
+                                    </ul>
+                                    {% endfor %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% comment %}
+<h4>Nutritional information</h4>
+<p>Calories: {{ meal.calorie_quantity }}{{ meal.calorie_unit }}</p>
+<p>Fat: {{ meal.fat_quantity }}{{ meal.fat_unit }}</p>
+<p>Carbohydrates: {{ meal.carbs_quantity }}{{ meal.carbs_unit }}</p>
+<p>Protein: {{ meal.protein_quantity }}{{ meal.protein_unit }}</p>
+</br>
+
+{% endcomment %}
+
+
+{% endblock %}
