@@ -92,11 +92,13 @@ def meal(request, meal_id_slug):
 
     print(Meal.objects.all)
 
+
     context_dict = {}
 
     try:
         mealget = Meal.objects.get(id=meal_id_slug)
         context_dict['meal'] = mealget
+        context_dict['picture'] = mealget.image
         context_dict['ingredients'] = mealget.ingredients.split('\n')
 
     except Meal.DoesNotExist:
