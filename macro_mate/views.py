@@ -80,9 +80,9 @@ def register(request):
                            'registered': registered})
 
 
-def meals(request):
+def meal(request):
     context_dict = {}
-    response = render(request, 'macro_mate/meals.html', context=context_dict)
+    response = render(request, 'macro_mate/meal.html', context=context_dict)
     return response
 
 

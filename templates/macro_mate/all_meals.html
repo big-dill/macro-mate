@@ -11,12 +11,11 @@
 <script src="{% static 'js/selectize.js/selectize.min.js' %}"></script>
 <script src="{% static 'js/all_meals.js' %}"></script>
 <script>
-// Setup search, uses inline javascript to access variable from template, kind of necessary...
-$(document).ready(function() {
-    const user = {% if userID %}{{userID}}{% else %}null{% endif %};
-    setupSearch(user);
-});
-
+    // Setup search, uses inline javascript to access variable from template, kind of necessary...
+    $(document).ready(function () {
+        const user = "{% if user %}{{user}}{% else %}{% endif %}";
+        setupSearch(user, "{% url 'macro_mate:meal' %}", "{% url 'api:meals'%}");
+    });
 </script>
 {% endblock %}
 
@@ -38,9 +37,9 @@ Meals
 
 {% block body_block %}
 
-<div class="row">
+<div class="container my-4">
     <input class="form-control form-control-lg" type="text" name="search" id="search"
-        placeholder="Search all {% if username %}of {{username|title}}'s{% endif %}meals">
+        placeholder="Search all {% if username %}of {{username|title}}'s {% endif %}meals">
 </div>
 
 <div class="row">
