@@ -15,26 +15,21 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('profilePicture',)
+        fields = ('picture',)
 
 
 class MealForm(forms.ModelForm):
     name = forms.CharField(max_length=Meal.NAME_MAX_LENGTH,
-                           label="Meal Name:")
+                           label="Meal Name:*")
 
-    url = forms.URLField(max_length=Meal.URL_MAX_LENGTH,
-                         required=False,
-                         label="Recipe Link:",
-                         help_text="Write your link to an external recipe here.")
-
-    categories = forms.ModelMultipleChoiceField(label="Categories:",
+    categories = forms.ModelMultipleChoiceField(label="Categories:*",
                                                 queryset=MealCategory.objects,
                                                 widget=forms.CheckboxSelectMultiple(),
                                                 required=True)
 
     servings = forms.IntegerField(min_value=0,
                                   initial=1,
-                                  label="# Servings:",
+                                  label="# Servings:*",
                                   help_text="Nutritional values will be calculated from this.")
 
     tags = TagField(widget=forms.TextInput(attrs={'placeholder': 'Add tags'}),
@@ -43,8 +38,13 @@ class MealForm(forms.ModelForm):
 
     ingredients = forms.CharField(widget=forms.Textarea,
                                   required=True,
-                                  label="Ingredients:",
+                                  label="Ingredients:*",
                                   help_text="Each ingredient should be written on a new line. Please include any units, e.g: '20g tomatoes'")
+
+    url = forms.URLField(max_length=Meal.URL_MAX_LENGTH,
+                         required=False,
+                         label="Recipe Link:",
+                         help_text="Write your link to an external recipe here.")
 
     notes = forms.CharField(widget=forms.Textarea,
                             required=False,
@@ -84,7 +84,7 @@ class MealForm(forms.ModelForm):
         model = Meal
         # Include all fields except...
         # Hide the foreign key to owner
-        exclude = ('owner', 'image')
+        exclude = ('owner', 'users', 'created_date', 'modified_date')
 
     # Allow cleaning up by appending http://
     def clean(self):

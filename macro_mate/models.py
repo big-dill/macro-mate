@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Add user profile picture
-    profilePicture = models.ImageField(
+    picture = models.ImageField(
         upload_to='profile_pictures', blank=True)
 
     # Set profile name to the user name
@@ -80,14 +80,23 @@ class Meal(models.Model):
     # Reference Fields
     # ----------------
 
+    # Date and time created
+    created_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+
     # The owning user
-    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    # When the user is deleted, all their meals are deleted
+    owner = models.ForeignKey(
+        UserProfile, on_delete=models.CASCADE,  related_name='%(class)s_owner')
+
+    # Users
+    # Each user can have many meals in their DB, which aren't necessarily owned by them
+    users = models.ManyToManyField(UserProfile, related_name='%(class)s_users')
 
     # Fields
     # ------
 
     name = models.CharField(max_length=NAME_MAX_LENGTH)
-    url = models.URLField(max_length=URL_MAX_LENGTH, blank=True)
 
     # Categories
     # ----------
@@ -106,6 +115,8 @@ class Meal(models.Model):
     # Should be a comma / new line seperated list. Enforce at form level.
     # May want to migrate this to another object, but currently not much need as API does heavy lifting.
     ingredients = models.TextField(blank=True)
+
+    url = models.URLField(max_length=URL_MAX_LENGTH, blank=True)
 
     notes = models.TextField(blank=True)
 
@@ -126,6 +137,6 @@ class Meal(models.Model):
     carbs_unit = models.CharField(max_length=UNIT_MAX_LENGTH, default='g')
     carbs_quantity = models.FloatField(default=0.0)
 
-    image = models.ImageField(blank=True)
+    image = models.ImageField(upload_to='meal_images', blank=True)
 
     def __str__(self): return self.name

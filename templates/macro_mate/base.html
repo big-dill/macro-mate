@@ -40,27 +40,27 @@
             <a class="p-2 text-dark" href="#">Meals</a>
             <a class="p-2 text-dark" href="#">Weekly Plan</a>
             <a class="p-2 text-dark" href="{% url 'macro_mate:meals' %}">Meals</a>
-            <a class="p-2 text-dark" href="{% url 'macro_mate:your_meals' %}">Your meals</a>
+            <a class="p-2 text-dark" href="{% url 'macro_mate:my_meals' %}">My Meals</a>
             {% else %}
             <a class="p-2 text-dark" href="#">Explore</a>
             {% endif %}
-        </nav>
-        {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and
-        'login' and 'sign up' if user is not logged in {% endcomment %}
 
-        {% if user.is_authenticated %}
+            {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and
+            'login' and 'sign up' if user is not logged in {% endcomment %}
 
-        <a class="p-2 btn btn-outline-primary" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
-            Logout</a>
+            {% if user.is_authenticated %}
 
-        {% else %}
+            <a class="p-2 ml-2 btn btn-outline-primary" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
+                Logout</a>
 
-        <a class="p-2 btn btn-primary" href="{% url 'auth_login'%}"> Login</a>
+            {% else %}
 
-        <a class="p-2 btn btn-outline-primary"
-            href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
+            <a class="p-2 ml-2 btn btn-primary" href="{% url 'auth_login'%}"> Login</a>
 
-        {% endif %}
+            <a class="p-2 ml-2 btn btn-outline-primary"
+                href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
+
+            {% endif %}
         </nav>
     </div>
 

@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from macro_mate.forms import UserForm, UserProfileForm, MealForm
 
+from macro_mate.models import Meal, MealCategory
+from taggit.models import Tag
+
 # decorator
 from django.contrib.auth.decorators import login_required
 
@@ -81,10 +84,46 @@ def meals(request):
     return response
 
 
-def your_meals(request):
+@login_required
+def my_meals(request):
     context_dict = {}
-    response = render(request, 'macro_mate/your_meals.html',
+
+    # get user, ensured via @login_required decorator
+    user = request.user
+
+    # get meals matching that user
+    userprofile = user.userprofile
+    meals = Meal.objects.filter(users=userprofile)
+
+    # get meal categories
+    def meal_by_cat(cat):
+        return meals.filter(categories__category=cat).order_by('name')
+
+    context_dict['categories'] = map(meal_by_cat, MealCategory.MEAL_CATEGORIES)
+
+    # get the tags from those meals
+    tag_set = set([])
+    for meal in meals:
+        tags = meal.tags.all()
+        for tag in tags:
+            tag_set.add(tag)
+
+    context_dict['tags'] = list(tag_set)
+
+    # get most recently added meals and same per category
+    def most_recent(query_set):
+        return query_set.order_by()[0:5]
+
+    # get most recent 5 meals for each category
+    context_dict['recent_categories'] = map(
+        most_recent, context_dict['categories'])
+
+    # press to see more
+    context_dict['meals'] = meals
+
+    response = render(request, 'macro_mate/my_meals.html',
                       context=context_dict)
+
     return response
 
 
@@ -101,8 +140,9 @@ def add_meal(request):
 
         if form.is_valid():
             if user:
+                userprofile = user.userprofile
                 meal = form.save(commit=False)
-                meal.owner = user.userprofile
+                meal.owner = userprofile
 
                 meal.image = form.cleaned_data['image']
                 meal.save()  # save before adding tags to taggit
@@ -115,6 +155,9 @@ def add_meal(request):
                 # add categories
                 categories = form.cleaned_data['categories']
                 meal.categories.set(categories)
+
+                # automatically the user to the list of users who have this meal in their collection
+                meal.users.add(userprofile)
 
                 # Redirect to meal viewer
                 return redirect(reverse('macro_mate:index'))
