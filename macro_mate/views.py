@@ -168,7 +168,8 @@ class MyMeals(AllMeals):
         self.meals = Meal.objects.filter(users=userprofile)
         # Override context dict to include user name
         self.context_dict = {
-            'username': user.username
+            'username': user.username,
+            'user': user.id
         }
 
         print(user.username)

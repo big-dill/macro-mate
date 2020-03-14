@@ -1,6 +1,25 @@
 {% extends 'macro_mate/base.html' %}
 {% load staticfiles %}
 
+{% comment %} Include CSS and JS specific to this page (selectize.js / add_meal) {% endcomment %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/selectize.js/selectize.css' %}">
+<link rel="stylesheet" href="{% static 'css/selectize.js/selectize.bootstrap3.css' %}">
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'js/selectize.js/selectize.min.js' %}"></script>
+<script src="{% static 'js/all_meals.js' %}"></script>
+<script>
+// Setup search, uses inline javascript to access variable from template, kind of necessary...
+$(document).ready(function() {
+    const user = {% if userID %}{{userID}}{% else %}null{% endif %};
+    setupSearch(user);
+});
+
+</script>
+{% endblock %}
+
 {% block title_block %}
 {% if username %}
 {{username|title}}'s Meals
@@ -18,6 +37,11 @@ Meals
 {% endblock %}
 
 {% block body_block %}
+
+<div class="row">
+    <input class="form-control form-control-lg" type="text" name="search" id="search"
+        placeholder="Search all {% if username %}of {{username|title}}'s{% endif %}meals">
+</div>
 
 <div class="row">
     <div class="col-xs-12 col-md-4 order-2 order-md-1">
