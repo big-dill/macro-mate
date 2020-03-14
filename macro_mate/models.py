@@ -6,6 +6,8 @@ from django.dispatch import receiver
 from taggit.managers import TaggableManager
 from multiselectfield import MultiSelectField
 
+from django.template.defaultfilters import slugify
+
 
 class UserProfile(models.Model):
     """A user profile model linked to Django's base User class."""
@@ -58,6 +60,12 @@ class MealCategory(models.Model):
     category = models.CharField(max_length=CATEGORY_MAX_LENGTH,
                                 unique=True)
 
+    slug = models.SlugField()
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.category)
+        super(MealCategory, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.category
 
@@ -95,7 +103,6 @@ class Meal(models.Model):
 
     # Fields
     # ------
-
     name = models.CharField(max_length=NAME_MAX_LENGTH)
 
     # Categories

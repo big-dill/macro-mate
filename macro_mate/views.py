@@ -1,3 +1,4 @@
+from django.views import View
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -9,6 +10,7 @@ from macro_mate.models import Meal, MealCategory
 from taggit.models import Tag
 
 # decorator
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 
@@ -84,58 +86,110 @@ def meals(request):
     return response
 
 
-@login_required
-def my_meals(request):
+class AllMeals(View):
+    """ A view for viewing all meals """
+
+    TEMPLATE = 'macro_mate/all_meals.html'
+
+    meals = Meal.objects.all()
     context_dict = {}
 
-    # get user, ensured via @login_required decorator
-    user = request.user
+    def get(self, request, tag_slug=None):
+        context_dict = self.context_dict
+        meals = self.meals
 
-    # get meals matching that user
-    userprofile = user.userprofile
-    meals = Meal.objects.filter(users=userprofile)
+        try:
+            tag = Tag.objects.get(slug=tag_slug)
+            context_dict['tag'] = tag
+            meals = meals.filter(tags__name__in=[tag.name])
+            print(meals)
+        except Tag.DoesNotExist:
+            # Ignore modifying self.meals if no tags are found
+            # Signal in context_dict so an error message can be displayed
+            context_dict['tag-error'] = True
+            pass
 
-    # get meal categories
-    def meal_by_cat(cat):
-        return meals.filter(categories__category=cat).order_by('name')
+        self.set_meal_lists_with_recents(
+            context_dict,
+            'meals',
+            meals
+        )
 
-    context_dict['categories'] = map(meal_by_cat, MealCategory.MEAL_CATEGORIES)
+        self.set_meal_lists_with_recents(
+            context_dict,
+            'breakfast',
+            meals.filter(categories__category__in=MealCategory.BREAKFAST)
+        )
 
-    # get the tags from those meals
-    tag_set = set([])
-    for meal in meals:
-        tags = meal.tags.all()
-        for tag in tags:
-            tag_set.add(tag)
+        self.set_meal_lists_with_recents(
+            context_dict,
+            'lunch',
+            meals.filter(categories__category__in=MealCategory.LUNCH)
+        )
 
-    context_dict['tags'] = list(tag_set)
+        self.set_meal_lists_with_recents(
+            context_dict,
+            'dinner',
+            meals.filter(categories__category__in=MealCategory.DINNER)
+        )
 
-    # get most recently added meals and same per category
-    def most_recent(query_set):
-        return query_set.order_by()[0:5]
+        self.set_meal_lists_with_recents(
+            context_dict,
+            'snack',
+            meals.filter(categories__category__in=MealCategory.SNACK)
+        )
 
-    # get most recent 5 meals for each category
-    context_dict['recent_categories'] = map(
-        most_recent, context_dict['categories'])
+        # get the tags from those meals
+        tag_set = set([])
+        for meal in meals:
+            tags = meal.tags.all()
+            for tag in tags:
+                tag_set.add(tag)
 
-    # press to see more
-    context_dict['meals'] = meals
+        context_dict['tags'] = list(tag_set)
 
-    response = render(request, 'macro_mate/my_meals.html',
-                      context=context_dict)
+        return render(request, self.TEMPLATE, context=context_dict)
 
-    return response
+    def set_meal_lists_with_recents(self, context_dict, key, query_set):
+        context_dict[key] = query_set
+        context_dict["recent_" + key] = query_set.order_by('created_date')[0:5]
 
 
-@login_required
-def add_meal(request):
+class MyMeals(AllMeals):
+    """ A view for viewing the current logged in user's meals """
 
-    form = MealForm()
+    @method_decorator(login_required)
+    def get(self, request, tag_slug=None):
+        # get user, ensured via @login_required decorator
+        user = request.user
+        # get meals matching that user
+        userprofile = user.userprofile
+        # Override meals to be those from a user
+        self.meals = Meal.objects.filter(users=userprofile)
+        # Override context dict to include user name
+        self.context_dict = {
+            'username': user.username
+        }
 
-    if request.method == 'POST':
+        print(user.username)
+        # Call super get to run the usual get code
+        return super().get(request, tag_slug)
+
+
+class AddMeal(View):
+    """ A view for adding a meal to the database """
+
+    @method_decorator(login_required)
+    def get(self, request):
+        """ Display the form for adding a meal """
+        return render(request, 'macro_mate/add_meal.html', context={
+            'form': MealForm()
+        })
+
+    @method_decorator(login_required)
+    def post(self, request):
+        """ Process the form submitted by the user """
         form = MealForm(request.POST, request.FILES)
-
-        # Get the user, no need to validate because @login_required
         user = request.user
 
         if form.is_valid():
@@ -143,12 +197,12 @@ def add_meal(request):
                 userprofile = user.userprofile
                 meal = form.save(commit=False)
                 meal.owner = userprofile
-
                 meal.image = form.cleaned_data['image']
-                meal.save()  # save before adding tags to taggit
+                meal.save()
+
+                # Add many to many fields post save:
 
                 # add tags from text
-                # needed for custom form element from my understanding...
                 tags = form.cleaned_data['tags']
                 meal.tags.set(*tags)
 
@@ -159,12 +213,8 @@ def add_meal(request):
                 # automatically the user to the list of users who have this meal in their collection
                 meal.users.add(userprofile)
 
-                # Redirect to meal viewer
-                return redirect(reverse('macro_mate:index'))
+                # Redirect to my_meals page
+                return redirect(reverse('macro_mate:my_meals'))
 
         else:
             print(form.errors)
-
-    # Provide list of tags to the view
-    context_dict = {'form': form}
-    return render(request, 'macro_mate/add_meal.html', context=context_dict)

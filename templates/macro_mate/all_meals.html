@@ -1,0 +1,53 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+{% if username %}
+{{username|title}}'s Meals
+{% else %}
+Meals
+{% endif %}
+{% endblock %}
+
+{% block header_block %}
+{% if username %}
+{{username|title}}'s {% if tag %}{{tag|title}}{% endif %} Meals
+{% else %}
+{% if tag %}{{tag|title}}{% endif %} Meals
+{% endif %}
+{% endblock %}
+
+{% block body_block %}
+
+<div class="row">
+    <div class="col-xs-12 col-md-4 order-2 order-md-1">
+        <div class="card">
+            <h2 class="card-header">Meal Tags</h2>
+            <div class="list-group">
+                {% for t in tags %}
+                <a href="{% if username %}{% url 'macro_mate:my_meals' %}{% else %}{% url 'macro_mate:meals' %}{% endif %}{{t.slug}}"
+                    class="list-group-item list-group-item-action {% if t.name == tag.name %}active{% endif %}">{{t.name}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-md-9 order-1 order-md-2">
+        {% for meal in meals %}
+        <p>{{meal.name}}</p>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
