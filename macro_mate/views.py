@@ -92,10 +92,9 @@ class AllMeals(View):
     TEMPLATE = 'macro_mate/all_meals.html'
 
     meals = Meal.objects.all()
-    context_dict = {}
 
-    def get(self, request, tag_slug=None):
-        context_dict = self.context_dict
+    # Takes a context dict for subclasses to overwrite
+    def get(self, request, context_dict={}, tag_slug=None):
         meals = self.meals
 
         try:
@@ -174,7 +173,7 @@ class MyMeals(AllMeals):
 
         print(user.username)
         # Call super get to run the usual get code
-        return super().get(request, tag_slug)
+        return super().get(request, context_dict, tag_slug)
 
 
 class AddMeal(View):

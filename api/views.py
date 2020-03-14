@@ -21,7 +21,7 @@ import requests
 
 
 def get_meals_list(userID: None):
-    if userID:
+    if userID and userID != "":
         try:
             results = Meal.objects.filter(users__id__contains=userID)
         except Meal.DoesNotExist:

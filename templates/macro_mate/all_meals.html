@@ -13,7 +13,9 @@
 <script>
     // Setup search, uses inline javascript to access variable from template, kind of necessary...
     $(document).ready(function () {
-        const user = "{% if user %}{{user}}{% else %}{% endif %}";
+        // If there's no username, then get all the meals as we're not on the user's page.
+        const user = "{% if username %}{{user}}{% else %}{% endif %}";
+        // Pass the javascript urls to the function for setting up the searchbar
         setupSearch(user, "{% url 'macro_mate:meal' %}", "{% url 'api:meals'%}");
     });
 </script>
@@ -55,10 +57,35 @@ Meals
         </div>
     </div>
 
-    <div class="col-xs-12 col-md-9 order-1 order-md-2">
-        {% for meal in meals %}
-        <p>{{meal.name}}</p>
-        {% endfor %}
+    <div class="col-xs-12 col-md-8 order-1 order-md-2">
+
+        {% comment %} Get most recent meals {% endcomment %}
+        <h2 class="my-3">Hot New {% if tag %}{{tag|title}} {% endif %}Meals</h2>
+
+        <div class="row">
+            {% for meal in recent_meals %}
+            <div class="col-6 col-lg-4 mb-4">
+
+                <div class="card-deck">
+                    <div class="card">
+                        <img class="card-img-top"
+                            src="{% if meal.image %}{% static 'images/placeholder.png' %}{% else %}{% static 'images/placeholder.png' %}{% endif %}"
+                            alt="{{meal.name}} image">
+                        <div class="card-body">
+                            <h3 class="h5 card-title">{{meal.name}}</h3>
+                            <p class="card-text">by: {{meal.owner}}</p>
+                            <p class="card-text"><small class="text-muted">Last updated {{meal.modified_date}}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+        {% comment %} Separate meals by category {% endcomment %}
+
+
     </div>
 
 </div>
