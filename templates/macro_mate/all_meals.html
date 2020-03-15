@@ -107,7 +107,7 @@ Meals
 
 {% comment %} Separate meals by category {% endcomment %}
 {% for category in categories %}
-{% include 'macro_mate/meal_list.html' with title=category.name meals=category.meals %}
+{% include 'macro_mate/meal_list.html' with title=category.name tag=tag meals=category.meals %}
 {% endfor %}
 
 </div>

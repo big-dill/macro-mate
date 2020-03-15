@@ -1,4 +1,4 @@
- <h2 class="my-3">{{title}} Meals</h2>
+ <h2 class="my-3">{% if tag %}{{tag|title}} {% endif %}{{title}} Meals</h2>
 
 
  {% for meal in meals %}
