@@ -98,41 +98,66 @@ function handleIngredientsSubmitError(xhr, status, error) {
   );
 }
 
-// A click handler which deals with the pressing of the analyse button.
-function analyseIngredientsSubmit(nutritionApi) {
-  // Remove error messages
-  $("#analysis_error").hide();
+/**
+ * Wrapper function closure for analysis api so that the functions
+ * can be setup in the template without the API path being hardcoded.
+ * @param {string} nutritionApi the url path to the nutrition api
+ */
+function setupAnalysisApiFunctionality(nutritionApi) {
+  // A click handler which deals with the pressing of the analyse button.
+  function analyseIngredientsSubmit() {
+    // Remove error messages
+    $("#analysis_error").hide();
 
-  setAnalysisButtonLoading(true);
+    setAnalysisButtonLoading(true);
 
-  const title = $("#id_name").val();
-  const servings = $("#id_servings").val();
-  const ingredients = $("#id_ingredients")
-    .val()
-    .split("\n");
+    const title = $("#id_name").val();
+    const servings = $("#id_servings").val();
+    const ingredients = $("#id_ingredients")
+      .val()
+      .split("\n");
 
-  $.get({
-    url: nutritionApi,
-    data: {
-      title,
-      servings,
-      ingredients,
-    },
-  })
-    .fail(handleIngredientsSubmitError)
-    .done(analyseIngredientsResponse)
-    .always(function() {
-      setAnalysisButtonLoading(false);
+    $.get({
+      url: nutritionApi,
+      data: {
+        title,
+        servings,
+        ingredients,
+      },
+    })
+      .fail(handleIngredientsSubmitError)
+      .done(analyseIngredientsResponse)
+      .always(function() {
+        setAnalysisButtonLoading(false);
+      });
+  }
+
+  // Initialize the analyse button with callbacks above etc.
+  function setupAnalyseButton() {
+    // Disable if no ingredients
+    enableAnalysisButton($("#id_ingredients").val());
+
+    // Enable if ingredients exist
+    $("#id_ingredients").keyup(function() {
+      if ($(this).val().length !== 0) {
+        $("#analyse").prop("disabled", false);
+      } else {
+        $("#analyse").prop("disabled", true);
+      }
     });
+
+    $("#analyse").click(analyseIngredientsSubmit);
+  }
+
+  setupAnalyseButton();
 }
 
 /**
- * We call this function in the main window, as we want to get the
- * URL from django...since this may change.
- *
- * @param {string} tagsApi the path that the API call should make.
+ * Wrapper function closure for tags api so that the tag functionality
+ * can be setup in the template without the API path being hardcoded.
+ * @param {string} tagsApi the path to the tags  API.
  */
-function setupTags(tagsApi) {
+function setupTagApiFunctionality(tagsApi) {
   const $select = $("#id_tags").selectize({
     options: [],
     valueField: "name",
@@ -158,23 +183,6 @@ function setupTags(tagsApi) {
       callback(response);
     });
   });
-}
-
-// Initialize the analyse button with callbacks above etc.
-function setupAnalyseButton(nutritionApi) {
-  // Disable if no ingredients
-  enableAnalysisButton($("#id_ingredients").val());
-
-  // Enable if ingredients exist
-  $("#id_ingredients").keyup(function() {
-    if ($(this).val().length !== 0) {
-      $("#analyse").prop("disabled", false);
-    } else {
-      $("#analyse").prop("disabled", true);
-    }
-  });
-
-  $("#analyse").click(analyseIngredientsSubmit);
 }
 
 // Initialize the submit button, which is initially hidden to prevent users

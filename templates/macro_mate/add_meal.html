@@ -14,9 +14,9 @@
 <script src="{% static 'js/add_meal.js' %}"></script>
 {% comment %} We add a small script tag here to avoid hard-coding the tags api URL in javascript {% endcomment %}
 <script>
-    $.ready(function () {
-        setupAnalyseButton("{% url 'api:nutrition' %}");
-        setupTags("{% url 'api:tags' %}");
+    $(document).ready(function () {
+        setupAnalysisApiFunctionality("{% url 'api:nutrition' %}");
+        setupTagApiFunctionality("{% url 'api:tags' %}");
     })
 </script>
 {% endblock %}
