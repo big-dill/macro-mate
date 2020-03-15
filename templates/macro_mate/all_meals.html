@@ -41,10 +41,12 @@ Meals
 {% block body_block %}
 
 <div class="row my-4">
+    {% comment %} Search bar which is populated by Javascript {% endcomment %}
     <div class="col-12 col-md-8">
         <input class="form-control form-control-lg" type="text" name="search" id="search"
             placeholder="Search all {% if username %}of {{username|title}}'s {% endif %}meals">
     </div>
+    {% comment %} Add meal button {% endcomment %}
     <div class="col-12 col-md-4 text-right">
         {% if username %}
         <a class="btn btn-primary" href="{% url 'macro_mate:add_meal' %}"><i class="fa fa-plus" aria-hidden="true"></i>
@@ -54,23 +56,25 @@ Meals
 </div>
 
 <div class="row">
+    {% comment %} Tags search bar. Changes order depending on device {% endcomment %}
     <div class="col-xs-12 col-md-4 order-2 order-md-1">
         <div class="card">
             <h2 class="card-header">Meal Tags</h2>
+            {% comment %} Custom CSS to force show scroll if OS tries to hide by default {% endcomment %}
             <div class="tag-list list-group">
                 {% for t in tags %}
+                {% comment %} URL set up so will toggle back to main page if tag is already active {% endcomment %}
                 <a href="{% if username %}{% url 'macro_mate:my_meals' %}{% else %}{% url 'macro_mate:meals' %}{% endif %}{% if t.name != tag.name %}{{t.slug}}{% endif %}"
                     class="list-group-item list-group-item-action {% if t.name == tag.name %}active{% endif %}">{{t.name}}</a>
                 {% endfor %}
             </div>
-            <p class="card-text border-top"><small class="ml-3 text-muted"> Click to select / deselect</small>
-            </p>
+            <p class="card-text border-top"><small class="ml-3 text-muted"> Click to select / deselect</small></p>
         </div>
     </div>
 
     <div class="col-xs-12 col-md-8 order-1 order-md-2">
 
-        {% comment %} Get most recent meals {% endcomment %}
+        {% comment %} Get most recent meals in big bold boxes {% endcomment %}
         <h2 class="my-3">{% if username %}{{username|title}}'s {% endif %}Hot New {% if tag %}{{tag|title}}
             {% endif %}Meals
         </h2>
@@ -100,13 +104,12 @@ Meals
                     </a>
                 </div>
             </div>
-
             {% endfor %}
         </div>
     </div>
 </div>
 
-{% comment %} Separate meals by category {% endcomment %}
+{% comment %} Separate meals by category, using another template {% endcomment %}
 {% for category in categories %}
 {% include 'macro_mate/meal_list.html' with title=category.name tag=tag meals=category.meals %}
 {% endfor %}
