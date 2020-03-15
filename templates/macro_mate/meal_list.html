@@ -3,7 +3,7 @@
 
  {% for meal in meals %}
  <ul>
-     <li><a href="#">
+     <li><a href="{% url 'macro_mate:meal' %}{{meal.id}}">
              <div class="row">
                  <div class="col-sm-12 col-md-auto mb-0">
                      <h3 class="h6">{{meal.name}} <span class="text-muted">by {{meal.owner}}</span>

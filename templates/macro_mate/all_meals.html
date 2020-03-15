@@ -71,7 +71,8 @@ Meals
     <div class="col-xs-12 col-md-8 order-1 order-md-2">
 
         {% comment %} Get most recent meals {% endcomment %}
-        <h2 class="my-3">{% if username %}{{username}}'s {% endif %}Hot New {% if tag %}{{tag|title}} {% endif %}Meals
+        <h2 class="my-3">{% if username %}{{username|title}}'s {% endif %}Hot New {% if tag %}{{tag|title}}
+            {% endif %}Meals
         </h2>
 
         <div class="row">
