@@ -19,19 +19,21 @@
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
 
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/nutrition_facts.css' %}">
 
     {% block css %} {% endblock %}
 
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <div
+        class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-info text-light border-bottom box-shadow">
         {% comment %} App Title - Could probably get this from a variable {% endcomment %}
 
         <h5 class="my-0 mr-md-auto font-weight-normal">
-            <a class="text-dark" href="/">
+            <a class="text-white" href="/">
                 MacroMate
             </a>
         </h5>
@@ -39,12 +41,11 @@
 
         {% comment %} App Nav - Needs to be replaced with links {% endcomment %}
         <nav class="my-2 my-md-0 mr-md-3">
+
             {% comment %} Header only displays Meals, Weekly Plan & Account if user is logged in {% endcomment %}
+            <a class="p-2 text-white" href="{% url 'macro_mate:meals' %}">Explore Meals</a>
             {% if  user.is_authenticated %}
-            <a class="p-2 text-dark" href="{% url 'macro_mate:meals' %}">Meals</a>
-            <a class="p-2 text-dark" href="{% url 'macro_mate:my_meals' %}">My Meals</a>
-            {% else %}
-            <a class="p-2 text-dark" href="#">Explore</a>
+            <a class="p-2 text-white" href="{% url 'macro_mate:my_meals' %}">My Meals</a>
             {% endif %}
 
             {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and
@@ -52,39 +53,39 @@
 
             {% if user.is_authenticated %}
 
-            <a class="p-2 ml-2 btn btn-outline-primary" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
+            <a class="p-2 ml-2 btn btn-outline-light" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
                 Logout</a>
 
             {% else %}
 
-            <a class="p-2 ml-2 btn btn-primary" href="{% url 'auth_login'%}"> Login</a>
+            <a class="p-2 ml-2 btn btn-light" href="{% url 'auth_login'%}"> Login</a>
 
-            <a class="p-2 ml-2 btn btn-outline-primary"
+            <a class="p-2 ml-2 btn btn-outline-light"
                 href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
 
             {% endif %}
         </nav>
     </div>
+    <div class="background bg-light">
 
-    <div class="container">
+        <div class="container bg-white h-100 py-4">
 
-        <main>
-            {% comment %} Use H1 with H5 styling as this is the main page header {% endcomment %}
+            <main>
+                <h1 class="pb-2 my-4 mx-2 border-bottom">
+                    {% block header_block %} {% endblock %}
+                </h1>
 
-            <h1 class="pb-2 my-4 mx-2 border-bottom">
-                {% block header_block %} {% endblock %}
-            </h1>
+                {% comment %} Use H1 with H5 styling as this is the main page header {% endcomment %}
+                {% block body_block %}
+                {% endblock %}
+            </main>
 
-            {% block body_block %}
-            {% endblock %}
-        </main>
+        </div>
 
         {% comment %} Footer for other links etc. {% endcomment %}
-        <footer class="pt-4 my-md-5 pt-md-5 border-top">
-            <div class="row">
-                <div class="col-12 col-md">
-                </div>
-                <div class="col-6 col-md">
+        <footer class="pt-4 pt-md-5 bg-white border-top">
+            <div class="row d-flex flex-row justify-content-around px-2 px-md-5">
+                <div>
                     <h5>Features</h5>
                     <ul class="list-unstyled text-small">
                         <!-- If the user is logged in, display Logout option-->
@@ -104,13 +105,13 @@
                         <li><a class="text-muted" href="#">Cool stuff</a></li>
                     </ul>
                 </div>
-                <div class="col-6 col-md">
+                <div>
                     <h5>Resources</h5>
                     <ul class="list-unstyled text-small">
                         <li><a class="text-muted" href="#">Resource</a></li>
                     </ul>
                 </div>
-                <div class="col-6 col-md">
+                <div>
                     <h5>About</h5>
                     <ul class="list-unstyled text-small">
                         <li><a class="text-muted" href="#">Team</a></li>
@@ -119,6 +120,7 @@
             </div>
         </footer>
     </div>
+
 
 
     <!-- Bootstrap core JavaScript
