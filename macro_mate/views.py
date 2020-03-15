@@ -1,4 +1,5 @@
 from django.views import View
+from django.views.generic.base import TemplateView
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -12,6 +13,7 @@ from taggit.models import Tag
 # decorator
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def index(request):
@@ -86,54 +88,53 @@ def meal(request):
     return response
 
 
-class AllMeals(View):
+class AllMeals(TemplateView):
     """ A view for viewing all meals """
 
-    TEMPLATE = 'macro_mate/all_meals.html'
+    template_name = 'macro_mate/all_meals.html'
 
-    meals = Meal.objects.all()
-
-    # Takes a context dict for subclasses to overwrite
-    def get(self, request, context_dict={}, tag_slug=None):
-        meals = self.meals
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag_slug = self.kwargs.get('slug', None)
+        meals = Meal.objects.all()
 
         try:
             tag = Tag.objects.get(slug=tag_slug)
-            context_dict['tag'] = tag
+            context['tag'] = tag
             meals = meals.filter(tags__name__in=[tag.name])
             print(meals)
         except Tag.DoesNotExist:
             # Ignore modifying self.meals if no tags are found
             # Signal in context_dict so an error message can be displayed
-            context_dict['tag-error'] = True
+            context['tag-error'] = True
             pass
 
         self.set_meal_lists_with_recents(
-            context_dict,
+            context,
             'meals',
             meals
         )
 
         self.set_meal_lists_with_recents(
-            context_dict,
+            context,
             'breakfast',
             meals.filter(categories__category__in=MealCategory.BREAKFAST)
         )
 
         self.set_meal_lists_with_recents(
-            context_dict,
+            context,
             'lunch',
             meals.filter(categories__category__in=MealCategory.LUNCH)
         )
 
         self.set_meal_lists_with_recents(
-            context_dict,
+            context,
             'dinner',
             meals.filter(categories__category__in=MealCategory.DINNER)
         )
 
         self.set_meal_lists_with_recents(
-            context_dict,
+            context,
             'snack',
             meals.filter(categories__category__in=MealCategory.SNACK)
         )
@@ -145,35 +146,27 @@ class AllMeals(View):
             for tag in tags:
                 tag_set.add(tag)
 
-        context_dict['tags'] = list(tag_set)
+        context['tags'] = list(tag_set)
 
-        return render(request, self.TEMPLATE, context=context_dict)
+        return context
 
     def set_meal_lists_with_recents(self, context_dict, key, query_set):
         context_dict[key] = query_set
-        context_dict["recent_" + key] = query_set.order_by('created_date')[0:5]
+        context_dict["recent_" +
+                     key] = query_set.order_by('created_date')[0:5]
 
 
-class MyMeals(AllMeals):
-    """ A view for viewing the current logged in user's meals """
+class MyMeals(LoginRequiredMixin, AllMeals):
+    """ A view for viewing the current logged in user's meals.
+    Inherits from AllMeals and uses the LoginRequiredMixin to ensure that the user is logged in """
 
-    @method_decorator(login_required)
-    def get(self, request, tag_slug=None):
-        # get user, ensured via @login_required decorator
-        user = request.user
-        # get meals matching that user
-        userprofile = user.userprofile
-        # Override meals to be those from a user
-        self.meals = Meal.objects.filter(users=userprofile)
-        # Override context dict to include user name
-        self.context_dict = {
-            'username': user.username,
-            'user': user.id
-        }
-
-        print(user.username)
-        # Call super get to run the usual get code
-        return super().get(request, context_dict, tag_slug)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['meals'] = Meal.objects.filter(users=user.userprofile)
+        context['username'] = user.username
+        context['user_id'] = user.id
+        return context
 
 
 class AddMeal(View):

@@ -14,7 +14,7 @@
     // Setup search, uses inline javascript to access variable from template, kind of necessary...
     $(document).ready(function () {
         // If there's no username, then get all the meals as we're not on the user's page.
-        const user = "{% if username %}{{user}}{% else %}{% endif %}";
+        const user = "{% if username %}{{user_id}}{% else %}{% endif %}";
         // Pass the javascript urls to the function for setting up the searchbar
         setupSearch(user, "{% url 'macro_mate:meal' %}", "{% url 'api:meals'%}");
     });
@@ -50,7 +50,7 @@ Meals
             <h2 class="card-header">Meal Tags</h2>
             <div class="list-group">
                 {% for t in tags %}
-                <a href="{% if username %}{% url 'macro_mate:my_meals' %}{% else %}{% url 'macro_mate:meals' %}{% endif %}{{t.slug}}"
+                <a href="{% if username %}{% url 'macro_mate:my_meals' %}{% else %}{% url 'macro_mate:meals' %}{% endif %}{% if t.name != tag.name %}{{t.slug}}{% endif %}"
                     class="list-group-item list-group-item-action {% if t.name == tag.name %}active{% endif %}">{{t.name}}</a>
                 {% endfor %}
             </div>
