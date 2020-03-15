@@ -41,6 +41,12 @@ Meals
 {% block body_block %}
 
 <div class="row my-4">
+    {% comment %} Display error here if no tag exists {% endcomment %}
+    {% if tag_error %}
+    <p class="col-12 text-danger">
+        Sorry, the tag "{{tag_slug}}" does not exist!
+    </p>
+    {% endif %}
     {% comment %} Search bar which is populated by Javascript {% endcomment %}
     <div class="col-12 col-md-8">
         <input class="form-control form-control-lg" type="text" name="search" id="search"
@@ -113,19 +119,6 @@ Meals
 {% for category in categories %}
 {% include 'macro_mate/meal_list.html' with title=category.name tag=tag meals=category.meals %}
 {% endfor %}
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
 
 
 {% endblock %}
