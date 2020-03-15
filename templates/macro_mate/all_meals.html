@@ -5,6 +5,7 @@
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/selectize.js/selectize.css' %}">
 <link rel="stylesheet" href="{% static 'css/selectize.js/selectize.bootstrap3.css' %}">
+<link rel="stylesheet" href="{% static 'css/all_meals.css' %}">
 {% endblock %}
 
 {% block js %}
@@ -39,54 +40,77 @@ Meals
 
 {% block body_block %}
 
-<div class="container my-4">
-    <input class="form-control form-control-lg" type="text" name="search" id="search"
-        placeholder="Search all {% if username %}of {{username|title}}'s {% endif %}meals">
+<div class="row my-4">
+    <div class="col-12 col-md-8">
+        <input class="form-control form-control-lg" type="text" name="search" id="search"
+            placeholder="Search all {% if username %}of {{username|title}}'s {% endif %}meals">
+    </div>
+    <div class="col-12 col-md-4 text-right">
+        {% if username %}
+        <a class="btn btn-primary" href="{% url 'macro_mate:add_meal' %}"><i class="fa fa-plus" aria-hidden="true"></i>
+            Add Meal </a>
+        {% endif %}
+    </div>
 </div>
 
 <div class="row">
     <div class="col-xs-12 col-md-4 order-2 order-md-1">
         <div class="card">
             <h2 class="card-header">Meal Tags</h2>
-            <div class="list-group">
+            <div class="tag-list list-group">
                 {% for t in tags %}
                 <a href="{% if username %}{% url 'macro_mate:my_meals' %}{% else %}{% url 'macro_mate:meals' %}{% endif %}{% if t.name != tag.name %}{{t.slug}}{% endif %}"
                     class="list-group-item list-group-item-action {% if t.name == tag.name %}active{% endif %}">{{t.name}}</a>
                 {% endfor %}
             </div>
+            <p class="card-text border-top"><small class="ml-3 text-muted"> Click to select / deselect</small>
+            </p>
         </div>
     </div>
 
     <div class="col-xs-12 col-md-8 order-1 order-md-2">
 
         {% comment %} Get most recent meals {% endcomment %}
-        <h2 class="my-3">Hot New {% if tag %}{{tag|title}} {% endif %}Meals</h2>
+        <h2 class="my-3">{% if username %}{{username}}'s {% endif %}Hot New {% if tag %}{{tag|title}} {% endif %}Meals
+        </h2>
 
         <div class="row">
             {% for meal in recent_meals %}
             <div class="col-6 col-lg-4 mb-4">
-
                 <div class="card-deck">
-                    <div class="card">
-                        <img class="card-img-top"
-                            src="{% if meal.image %}{% static 'images/placeholder.png' %}{% else %}{% static 'images/placeholder.png' %}{% endif %}"
-                            alt="{{meal.name}} image">
-                        <div class="card-body">
-                            <h3 class="h5 card-title">{{meal.name}}</h3>
-                            <p class="card-text">by: {{meal.owner}}</p>
-                            <p class="card-text"><small class="text-muted">Last updated {{meal.modified_date}}</small>
-                            </p>
+                    <a class="card-link" href="{% url 'macro_mate:meal' %}{{meal.id}}">
+                        <div class="card">
+                            <img class="card-img-top"
+                                src="{% if meal.image %}{{MEDIA_URL}}{{meal.image}}{% else %}{% static 'images/placeholder.png' %}{% endif %}"
+                                alt="{{meal.name}} image">
+                            <div class="card-body">
+                                <h3 class="h5 card-title">{{meal.name}}</h3>
+                                <p class="card-text">by: {{meal.owner}}</p>
+                                <div>
+                                    {% for tag in meal.tags.names %}
+                                    <span class="badge badge-info">{{tag}}</span>
+                                    {% endfor %}
+                                </div>
+                                <p class="card-text"><small class="text-muted">Last updated
+                                        {{meal.modified_date}}</small>
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             {% endfor %}
         </div>
-        {% comment %} Separate meals by category {% endcomment %}
-
-
     </div>
+</div>
+
+{% comment %} Separate meals by category {% endcomment %}
+{% for category in categories %}
+{% include 'macro_mate/meal_list.html' with title=category.name meals=category.meals %}
+{% endfor %}
+
+</div>
 
 </div>
 

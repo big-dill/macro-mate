@@ -95,8 +95,11 @@ class AllMeals(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        tag_slug = self.kwargs.get('slug', None)
+
         meals = Meal.objects.all()
+        context['meals'] = meals
+
+        tag_slug = self.kwargs.get('slug', None)
 
         try:
             tag = Tag.objects.get(slug=tag_slug)
@@ -106,38 +109,16 @@ class AllMeals(TemplateView):
         except Tag.DoesNotExist:
             # Ignore modifying self.meals if no tags are found
             # Signal in context_dict so an error message can be displayed
+            # For error displays
+            context['tag-slug'] = tag_slug
             context['tag-error'] = True
-            pass
 
-        self.set_meal_lists_with_recents(
-            context,
-            'meals',
-            meals
-        )
+        context['recent_meals'] = meals.order_by('-created_date')[0:5]
 
-        self.set_meal_lists_with_recents(
-            context,
-            'breakfast',
-            meals.filter(categories__category__in=MealCategory.BREAKFAST)
-        )
+        categories = [{'name': cat, 'meals': meals.filter(
+            categories__category=cat)} for cat in MealCategory.MEAL_CATEGORIES]
 
-        self.set_meal_lists_with_recents(
-            context,
-            'lunch',
-            meals.filter(categories__category__in=MealCategory.LUNCH)
-        )
-
-        self.set_meal_lists_with_recents(
-            context,
-            'dinner',
-            meals.filter(categories__category__in=MealCategory.DINNER)
-        )
-
-        self.set_meal_lists_with_recents(
-            context,
-            'snack',
-            meals.filter(categories__category__in=MealCategory.SNACK)
-        )
+        context['categories'] = categories
 
         # get the tags from those meals
         tag_set = set([])
@@ -149,11 +130,6 @@ class AllMeals(TemplateView):
         context['tags'] = list(tag_set)
 
         return context
-
-    def set_meal_lists_with_recents(self, context_dict, key, query_set):
-        context_dict[key] = query_set
-        context_dict["recent_" +
-                     key] = query_set.order_by('created_date')[0:5]
 
 
 class MyMeals(LoginRequiredMixin, AllMeals):
@@ -172,10 +148,12 @@ class MyMeals(LoginRequiredMixin, AllMeals):
 class AddMeal(View):
     """ A view for adding a meal to the database """
 
+    TEMPLATE = "macro_mate/add_meal.html"
+
     @method_decorator(login_required)
     def get(self, request):
         """ Display the form for adding a meal """
-        return render(request, 'macro_mate/add_meal.html', context={
+        return render(request, self.TEMPLATE, context={
             'form': MealForm()
         })
 
@@ -211,3 +189,4 @@ class AddMeal(View):
 
         else:
             print(form.errors)
+            return render(request, self.TEMPLATE, context={'form': form})

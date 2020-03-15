@@ -124,7 +124,7 @@ function setupTags() {
     closeAfterSelect: true,
     createOnBlur: true,
     maxItems: 5,
-    create: false,
+    create: true,
   });
 
   const $tagSelector = $select[0].selectize;

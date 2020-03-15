@@ -1,0 +1,20 @@
+ <h2 class="my-3">{{title}} Meals</h2>
+
+
+ {% for meal in meals %}
+ <ul>
+     <li><a href="#">
+             <div class="row">
+                 <div class="col-sm-12 col-md-auto mb-0">
+                     <h3 class="h6">{{meal.name}} <span class="text-muted">by {{meal.owner}}</span>
+                 </div>
+                 <div class="col-sm-12 col-md-auto">
+                     {% for tag in meal.tags.names %}
+                     <span class="badge badge-info">{{tag}}</span>
+                     {% endfor %}</h3>
+                 </div>
+             </div>
+         </a></li>
+ </ul>
+
+ {% endfor %}
