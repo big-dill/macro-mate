@@ -20,12 +20,16 @@ Meals
         <div class="col-sm" id="image_tags">
             <div class="row justify-content-md-center">
                 <div class="column" id="image">
-                    <img src="{{meal.image.url}}" alt="{{meal.name}}" width="500" height="auto" />
+                    {% if meal.image %}
+                        <img src="{{meal.image.url}}" alt="{{meal.name}}" width="500" height="auto" />
+                    {% else %}
+                    <img src = "{% static 'images/kitchen-cookware-piled-up-on-brown-wooden-rack-187083.jpg' %}" alt="{{meal.name}}" width="500" height="auto"/>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-sm">
                 <div id="nutrition_table">
-                    {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" calories_quantity="4" calories_unit="kcal" fat_quantity="3000" fat_unit="g" protein_quantity="3000" protein_unit="g" carbs_quantity="3402" carbs_unit="g"%}
+                    {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" calories_quantity=meal.calories_quantity calories_unit="kcal" fat_quantity=meal.fat_quantity fat_unit="g" protein_quantity=meal.protein_quantity protein_unit="g" carbs_quantity=meal.carbs_quantity carbs_unit="g"%}
                 </div>
             </div>
         </div>
@@ -33,9 +37,12 @@ Meals
 
         <div class="col-sm">
             <div class="row">
+                <div class = "col-md-2">
                 <h4>Tags</h4>
+                </div>
+                
                 {% for tag in meal.tags.all %}
-                <div class="column">
+                <div class="col-md-1">
                     <div class="mr-1 badge badge-info">{{ tag }}</div>
                 </div>
                 {% endfor %}

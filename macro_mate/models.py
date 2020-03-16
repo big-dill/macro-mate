@@ -18,7 +18,7 @@ class UserProfile(models.Model):
 
     # Add user profile picture
     profilePicture = models.ImageField(
-        upload_to='profile_pictures', blank=True)
+        upload_to='profile_pictures', blank=True, default='macro-mate\media\kitchen-cookware-piled-up-on-brown-wooden-rack-187083.jpg')
 
     # Set profile name to the user name
     def __str__(self):
