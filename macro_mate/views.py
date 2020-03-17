@@ -87,7 +87,7 @@ def your_meals(request):
     response = render(request, 'macro_mate/your_meals.html', context=context_dict)
     return response
 
-# The individual meal page 
+# The individual meal page
 def meal(request, meal_id_slug):
 
     print(Meal.objects.all)
