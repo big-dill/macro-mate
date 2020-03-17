@@ -20,6 +20,9 @@ Meals
         <div class="col-sm" id="image_tags">
             <div class="row justify-content-md-center">
                 <div class="column" id="image">
+                {% comment %}
+                Getting the image from the meal - if no image displays a default 
+                {% endcomment %}
                     {% if meal.image %}
                         <img src="{{meal.image.url}}" alt="{{meal.name}}" width="500" height="auto" />
                     {% else %}
@@ -28,6 +31,9 @@ Meals
                 </div>
             </div>
             <div class="col-sm">
+            {% comment%}
+            The nutrition table gets the nutrition info from the meal model
+            {% endcomment %}
                 <div id="nutrition_table">
                     {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" calories_quantity=meal.calories_quantity calories_unit="kcal" fat_quantity=meal.fat_quantity fat_unit="g" protein_quantity=meal.protein_quantity protein_unit="g" carbs_quantity=meal.carbs_quantity carbs_unit="g"%}
                 </div>
@@ -70,16 +76,5 @@ Meals
 
     </div>
 </div>
-
-
-{% comment %}
-<h4>Nutritional information</h4>
-<p>Calories: {{ meal.calorie_quantity }}{{ meal.calorie_unit }}</p>
-<p>Fat: {{ meal.fat_quantity }}{{ meal.fat_unit }}</p>
-<p>Carbohydrates: {{ meal.carbs_quantity }}{{ meal.carbs_unit }}</p>
-<p>Protein: {{ meal.protein_quantity }}{{ meal.protein_unit }}</p>
-</br>
-
-{% endcomment %}
 
 {% endblock %}
