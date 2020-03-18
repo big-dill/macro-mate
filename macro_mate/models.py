@@ -18,6 +18,8 @@ class UserProfile(models.Model):
     # Add user profile picture
     picture = models.ImageField(upload_to='profile_pictures',
                                 blank=True)
+    profilePicture = models.ImageField(
+        upload_to='profile_pictures', blank=True, default='macro-mate\media\kitchen-cookware-piled-up-on-brown-wooden-rack-187083.jpg')
 
     # Set name to the user's name
     def __str__(self):
@@ -69,6 +71,7 @@ class MealCategory(models.Model):
 
 
 class Meal(models.Model):
+
     """A model for a meal."""
 
     NAME_MAX_LENGTH = 128
