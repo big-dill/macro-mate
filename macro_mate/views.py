@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from macro_mate.forms import UserForm, UserProfileForm, MealForm
 
+from macro_mate.models import Meal
 # decorator
 from django.contrib.auth.decorators import login_required
 
@@ -83,9 +84,26 @@ def meals(request):
 
 def your_meals(request):
     context_dict = {}
-    response = render(request, 'macro_mate/your_meals.html',
-                      context=context_dict)
+    response = render(request, 'macro_mate/your_meals.html', context=context_dict)
     return response
+
+# The individual meal page
+def meal(request, meal_id_slug):
+
+    print(Meal.objects.all)
+
+
+    context_dict = {}
+
+    try:
+        mealget = Meal.objects.get(id=meal_id_slug)
+        context_dict['meal'] = mealget
+        context_dict['picture'] = mealget.image
+        context_dict['ingredients'] = mealget.ingredients.split('\n')
+
+    except Meal.DoesNotExist:
+        context_dict['meal'] = None
+    return render(request, 'macro_mate/meal.html', context=context_dict)
 
 
 @login_required

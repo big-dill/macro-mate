@@ -17,11 +17,12 @@ class UserProfile(models.Model):
 
     # Add user profile picture
     profilePicture = models.ImageField(
-        upload_to='profile_pictures', blank=True)
+        upload_to='profile_pictures', blank=True, default='macro-mate\media\kitchen-cookware-piled-up-on-brown-wooden-rack-187083.jpg')
 
     # Set profile name to the user name
     def __str__(self):
         return self.user.username
+
 
 # The following receivers synchronise User_Profile with User when a
 # new user is created or saved.
@@ -63,6 +64,7 @@ class MealCategory(models.Model):
 
 
 class Meal(models.Model):
+
     """A model for a meal."""
 
     # Constraints
