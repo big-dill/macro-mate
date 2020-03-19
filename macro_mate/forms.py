@@ -12,12 +12,6 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password',)
 
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ('picture',)
-
-
 class MealForm(forms.ModelForm):
     name = forms.CharField(max_length=Meal.NAME_MAX_LENGTH,
                            label="Meal Name:*")

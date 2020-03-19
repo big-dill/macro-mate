@@ -15,12 +15,6 @@ class UserProfile(models.Model):
     # Link to the basic User account
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    # Add user profile picture
-    picture = models.ImageField(upload_to='profile_pictures',
-                                blank=True)
-    profilePicture = models.ImageField(
-        upload_to='profile_pictures', blank=True, default='macro-mate\media\kitchen-cookware-piled-up-on-brown-wooden-rack-187083.jpg')
-
     # Set name to the user's name
     def __str__(self):
         return self.user.username
@@ -143,6 +137,7 @@ class Meal(models.Model):
     carbs_unit = models.CharField(max_length=UNIT_MAX_LENGTH,
                                   default='g')
 
-    image = models.ImageField(upload_to='meal_images', blank=True)
+    image = models.ImageField(upload_to='meal_images',
+                              blank=True)
 
     def __str__(self): return self.name

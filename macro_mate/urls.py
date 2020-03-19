@@ -14,5 +14,6 @@ urlpatterns = [
     path('my_meals/', MyMeals.as_view(), name="my_meals"),
     path('my_meals/<slug>/', MyMeals.as_view()),
     path('add_meal/', AddMeal.as_view(), name='add_meal'),
-    path('meal/<slug:meal_id_slug>/', views.meal, name='meal'),
+    path('meal/', views.meal, name='meal'),
+    path('meal/<slug:meal_id_slug>/', views.meal),
 ]

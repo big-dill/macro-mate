@@ -18,17 +18,19 @@
     </div>
     <div class="nutrition-label">
         <div id="id_nutrition_table_fat" class="nutrition-title">fat</div>
-        <div id="id_nutrition_table_fat_quantity" class="nutrition-bottom">{{fat_quantity}}{{fat_unit}}
+        <div id="id_nutrition_table_fat_quantity" class="nutrition-bottom">{{fat_quantity|floatformat:2}}{{fat_unit}}
         </div>
     </div>
     <div class="nutrition-label">
         <div id="id_nutrition_table_protein" class="nutrition-title">protein</div>
-        <div id="id_nutrition_table_protein_quantity" class="nutrition-bottom">{{protein_quantity}}{{protein_unit}}
+        <div id="id_nutrition_table_protein_quantity" class="nutrition-bottom">
+            {{protein_quantity|floatformat:2}}{{protein_unit}}
         </div>
     </div>
     <div class="nutrition-label">
         <div id="id_nutrition_table_carbs" class="nutrition-title">carbs</div>
-        <div id="id_nutrition_table_carbs_quantity" class="nutrition-bottom">{{carbs_quantity}}{{carbs_unit}}
+        <div id="id_nutrition_table_carbs_quantity" class="nutrition-bottom">
+            {{carbs_quantity|floatformat:2}}{{carbs_unit}}
         </div>
     </div>
 </div>
