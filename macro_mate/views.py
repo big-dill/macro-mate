@@ -29,7 +29,11 @@ def meal(request, meal_id_slug):
     # 404 if no meal found
     mealget = get_object_or_404(Meal, id=meal_id_slug)
     user = request.user
-    is_owner = mealget.owner == user.userprofile
+
+    is_owner = False
+    if user.is_authenticated:
+        is_owner = mealget.owner == user.userprofile
+
     ingredients = mealget.ingredients.split('\n')
     comments = mealget.comments.all()
     new_comment = None
