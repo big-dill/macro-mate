@@ -8,6 +8,8 @@ from django.http import JsonResponse
 # View for view classes
 from django.views import View
 
+from macro_mate.models import Meal
+
 # Import taggit models to get all tags
 from taggit.models import Tag
 
@@ -16,6 +18,47 @@ from macro_mate_project.settings import NUTRITION_API_ID, NUTRITION_API_KEY
 # Requests for external API call
 import json
 import requests
+
+
+def get_meals_list(userID: None):
+    if userID and userID != "":
+        try:
+            results = Meal.objects.filter(users__id__contains=userID)
+        except Meal.DoesNotExist:
+            results = Meal.objects.all()
+    else:
+        results = Meal.objects.all()
+
+    return results
+
+# Meals API
+# --------
+# Used for AJAX calls that populate the suggestion box when using meals
+
+# API queries:
+# user -> the user ID
+# API returns:
+# a json list of meals and their URLs
+
+
+class MealsAPI(View):
+    """ An API for viewing the tags contained in the macro_mate app"""
+
+    def get(self, request):
+
+        query_set = request.GET
+        userID = query_set.get('user', None)
+
+        try:
+            meal_list = get_meals_list(userID)
+        except ValueError:
+            return HttpResponse(-1)
+
+        meal_list_parsed = [{'name': meal.name, 'id': meal.id}
+                            for meal in meal_list]
+
+        # safe=False because not a dictionary
+        return JsonResponse(meal_list_parsed, safe=False)
 
 
 def get_tag_list(max_results: int = 0, contains: str = ''):

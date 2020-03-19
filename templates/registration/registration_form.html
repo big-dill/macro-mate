@@ -1,17 +1,20 @@
 {% extends 'macro_mate/base.html' %}
 
 {% block title_block %}
-    Register
+Register
+{% endblock %}
+
+{% block header_block %}
+Register for MacroMate!
 {% endblock %}
 
 {% block body_block %}
-<h1> Register for MacroMate! </h1>
 
-<form method = "post" action =".">
-     {% csrf_token %}
+<form method="post" action=".">
+    {% csrf_token %}
 
-     {{ form.as_p }}
+    {{ form.as_p }}
 
-     <input type="submit" value="Register" />
+    <input type="submit" value="Register" />
 </form>
 {% endblock %}

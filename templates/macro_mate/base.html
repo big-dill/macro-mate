@@ -21,103 +21,100 @@
 
     <link rel="stylesheet" href="{% static 'css/nutrition_facts.css' %}">
 
-    {% block css %} {% endblock %}
+    {% comment %} A block so other templates can insert custom CSS in the correct place {% endcomment %}
+    {% block css %}
+    {% endblock %}
 
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-        {% comment %} App Title - Could probably get this from a variable {% endcomment %}
+    <div
+        class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-info text-light border-bottom box-shadow">
+
+        {% comment %} App title, links to home {% endcomment %}
         <h5 class="my-0 mr-md-auto font-weight-normal">
-            MacroMate
+            <a class="text-white" href="/">
+                MacroMate
+            </a>
         </h5>
 
-        {% comment %} App Nav - Needs to be replaced with links {% endcomment %}
         <nav class="my-2 my-md-0 mr-md-3">
-            {% comment %} Header only displays Meals, Weekly Plan & Account if user is logged in {% endcomment %}
+
+            {% comment %} Header only displays my_meals if user is logged in {% endcomment %}
+            <a class="p-2 text-white" href="{% url 'macro_mate:meals' %}">Explore Meals</a>
             {% if  user.is_authenticated %}
-            <a class="p-2 text-dark" href="#">Meals</a>
-            <a class="p-2 text-dark" href="#">Weekly Plan</a>
-            <a class="p-2 text-dark" href="{% url 'macro_mate:meals' %}">Meals</a>
-            <a class="p-2 text-dark" href="{% url 'macro_mate:your_meals' %}">Your meals</a>
-            {% else %}
-            <a class="p-2 text-dark" href="#">Explore</a>
+            <a class="p-2 text-white" href="{% url 'macro_mate:my_meals' %}">My Meals</a>
             {% endif %}
-        </nav>
-        {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and
-        'login' and 'sign up' if user is not logged in {% endcomment %}
 
-        {% if user.is_authenticated %}
+            {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and
+            'login' and 'sign up' if user is not logged in {% endcomment %}
+            {% if user.is_authenticated %}
+            <a class="p-2 ml-2 btn btn-outline-light" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
+                Logout</a>
+            {% else %}
 
-        <a class="p-2 btn btn-outline-primary" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
-            Logout</a>
+            <a class="p-2 ml-2 btn btn-light" href="{% url 'auth_login'%}"> Login</a>
 
-        {% else %}
+            <a class="p-2 ml-2 btn btn-outline-light"
+                href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
 
-        <a class="p-2 btn btn-primary" href="{% url 'auth_login'%}"> Login</a>
-
-        <a class="p-2 btn btn-outline-primary"
-            href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
-
-        {% endif %}
+            {% endif %}
         </nav>
     </div>
 
-    <div class="container">
-
+    {% comment %} Container wrapper with a nice white offset to contrast with grey {% endcomment %}
+    <div class="container bg-white h-100 py-4">
         <main>
-            {% comment %} Use H1 with H5 styling as this is the main page header {% endcomment %}
-
+            {% comment %} Header block for other templates {% endcomment %}
             <h1 class="pb-2 my-4 mx-2 border-bottom">
                 {% block header_block %} {% endblock %}
             </h1>
 
+            {% comment %} Body block for other templates {% endcomment %}
             {% block body_block %}
             {% endblock %}
         </main>
-
-        {% comment %} Footer for other links etc. {% endcomment %}
-        <footer class="pt-4 my-md-5 pt-md-5 border-top">
-            <div class="row">
-                <div class="col-12 col-md">
-                </div>
-                <div class="col-6 col-md">
-                    <h5>Features</h5>
-                    <ul class="list-unstyled text-small">
-                        <!-- If the user is logged in, display Logout option-->
-                        {% if user.is_authenticated %}
-                        <li><a class="text-muted" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">Logout</a>
-                        </li>
-
-                        {% else %}
-                        <!-- If there is no user logged in, display Login and Register options-->
-                        <li><a class="text-muted" href="{% url 'auth_login'%}">Login</a></li>
-                        <li><a class="text-muted"
-                                href="{% url 'registration_register' %}?next={% url 'registration_register' %}">Register</a>
-                        </li>
-                        {% endif %}
-
-
-                        <li><a class="text-muted" href="#">Cool stuff</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md">
-                    <h5>Resources</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="#">Resource</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md">
-                    <h5>About</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="#">Team</a></li>
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 
+    {% comment %} Footer for other links etc. {% endcomment %}
+    <footer class="pt-4 pt-md-5 bg-white border-top">
+        <div class="row d-flex flex-row justify-content-around px-2 px-md-5">
+            <div>
+                <h5>Features</h5>
+                <ul class="list-unstyled text-small">
+                    <!-- If the user is logged in, display Logout option-->
+                    {% if user.is_authenticated %}
+                    <li><a class="text-muted" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">Logout</a>
+                    </li>
+
+                    {% else %}
+                    <!-- If there is no user logged in, display Login and Register options-->
+                    <li><a class="text-muted" href="{% url 'auth_login'%}">Login</a></li>
+                    <li><a class="text-muted"
+                            href="{% url 'registration_register' %}?next={% url 'registration_register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% comment %} Potentially add other footer functionality here {% endcomment %}
+
+            {% comment %} <div>
+                <h5>Resources</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted" href="#">Resource</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>About</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted" href="#">Team</a></li>
+                </ul>
+            </div> {% endcomment %}
+
+        </div>
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -133,6 +130,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
 
+    {% comment %} A block so other templates can insert javascript to the correct place and not inline {% endcomment %}
     {% block js %}
     {% endblock %}
 </body>

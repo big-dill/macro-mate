@@ -12,6 +12,13 @@
 {% block js %}
 <script src="{% static 'js/selectize.js/selectize.min.js' %}"></script>
 <script src="{% static 'js/add_meal.js' %}"></script>
+{% comment %} We add a small script tag here to avoid hard-coding the tags api URL in javascript {% endcomment %}
+<script>
+    $(document).ready(function () {
+        setupAnalysisApiFunctionality("{% url 'api:nutrition' %}");
+        setupTagApiFunctionality("{% url 'api:tags' %}");
+    })
+</script>
 {% endblock %}
 
 {% comment %} Page Title {% endcomment %}

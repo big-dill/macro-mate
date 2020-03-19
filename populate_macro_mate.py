@@ -3,7 +3,6 @@
 # cmd-shift-p > Tasks:Run Task > populate-db
 
 
-
 import lorem
 import random
 import django
@@ -21,7 +20,7 @@ MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
 
 
-def add_meal(owner, name, url, tags, ingredients):
+def add_meal(owner, users, name, url, tags, ingredients):
     # randomly assign a list
     m = Meal.objects.get_or_create(owner=owner, name=name, url=url)[0]
 
@@ -42,6 +41,8 @@ def add_meal(owner, name, url, tags, ingredients):
 
     # randomly add categories after save (as many to many field)
     m.categories.set(get_random_meal_categories())
+    # randomly add users who reference this meal
+    m.users.set(users)
 
     return m
 
@@ -120,15 +121,39 @@ def populate():
         c = MealCategory.objects.get_or_create(category=cat)[0]
         c.save()
 
+    # Initialise Mock Users
     for name in users:
         user = add_user(name)
-        # Add a random amount of meals between 1 and 10
+
+    # Get the users from the newly created user list
+    users = User.objects.all()
+    # Get the profiles of each user for meal association
+    userprofiles = [user.userprofile for user in users]
+
+    for user in users:
+        # Add a random amount of meals between 1 and 10 that they own
         for i in range(random.randint(1, 10)):
-            add_meal(user.userprofile,
-                     random.choice(meal_names),
-                     random.choice(meal_urls),
-                     get_random_sample(meal_tags),
-                     get_random_sample(meal_ingredients))
+            userprofile = user.userprofile
+            # Add random users who have the meal in their account, including the creator
+            random_users = set(get_random_sample(userprofiles))
+            random_users.add(userprofile)
+
+            print(random_users)
+
+            add_meal(
+                # Set user as the owner
+                userprofile,
+                # Add the meal to a random selection of user's accounts
+                random_users,
+                # Name their version of the meal
+                user.username + "'s " + random.choice(meal_names),
+                # Randomly assign a URL
+                random.choice(meal_urls),
+                # Randomly assign meal_tags
+                get_random_sample(meal_tags),
+                # Randomly assign ingredients
+                get_random_sample(meal_ingredients)
+            )
 
 
 if __name__ == '__main__':

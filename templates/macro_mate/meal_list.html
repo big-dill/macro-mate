@@ -1,0 +1,23 @@
+ {% comment %} A small template to avoid repetition. Displays a title and meals or nothing if there is no meal list
+ {% endcomment %}
+
+ {% if meals %}
+ <h2 class="my-3">{% if tag %}{{tag|title}} {% endif %}{{title}} Meals</h2>
+ {% for meal in meals %}
+ <ul>
+     <li><a href="{% url 'macro_mate:meal' %}{{meal.id}}">
+             <div class="row">
+                 <div class="col-sm-12 col-md-auto mb-0">
+                     <h3 class="h6">{{meal.name}} <span class="text-muted">by {{meal.owner}}</span>
+                 </div>
+                 <div class="col-sm-12 col-md-auto">
+                     {% for tag in meal.tags.names %}
+                     <span class="badge badge-info">{{tag}}</span>
+                     {% endfor %}</h3>
+                 </div>
+             </div>
+         </a></li>
+ </ul>
+
+ {% endfor %}
+ {% endif %}
