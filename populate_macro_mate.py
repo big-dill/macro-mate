@@ -146,7 +146,7 @@ def populate():
     # Get the profiles of each user for meal association
     userprofiles = [user.userprofile for user in users]
 
-    for user in user:
+    for user in users:
         # Add a random amount of meals between 1 and 10 that they own
         for i in range(random.randint(1, 10)):
             userprofile = user.userprofile
