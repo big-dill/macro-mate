@@ -1,11 +1,10 @@
 from django.views import View
 from django.views.generic.base import TemplateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import redirect
-from macro_mate.forms import MealForm
+from macro_mate.forms import MealForm, CommentForm
 
 from macro_mate.models import Meal, MealCategory
 from taggit.models import Tag
@@ -17,25 +16,51 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def index(request):
-    context_dict = {}
-    response = render(request, 'macro_mate/index.html', context=context_dict)
+    TEMPLATE = 'macro_mate/index.html'
+    response = render(request, TEMPLATE, context={})
     return response
 
 
-# The individual meal page
 def meal(request, meal_id_slug):
-    context_dict = {}
+    """Displays the meal with a comment form"""
 
-    try:
-        mealget = Meal.objects.get(id=meal_id_slug)
-        context_dict['meal'] = mealget
-        context_dict['picture'] = mealget.image
-        context_dict['ingredients'] = mealget.ingredients.split('\n')
+    TEMPLATE = "macro_mate/meal.html"
 
-    except Meal.DoesNotExist:
-        context_dict['meal'] = None
+    # 404 if no meal found
+    mealget = get_object_or_404(Meal, id=meal_id_slug)
+    user = request.user
+    ingredients = mealget.ingredients.split('\n')
+    comments = mealget.comments.all()
+    new_comment = None
 
-    return render(request, 'macro_mate/meal.html', context=context_dict)
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            # Create Comment object but don't save to database yet
+            new_comment = comment_form.save(commit=False)
+            new_comment.owner = user.userprofile
+            # Assign the current meal to the comment
+            new_comment.meal = mealget
+            # Save the comment to the database
+            new_comment.save()
+
+            # Redirect to the same url, but for 'get'
+            return HttpResponseRedirect(request.path)
+
+    else:
+        if user.is_authenticated:
+            comment_form = CommentForm()
+        else:
+            comment_form = None
+
+    return render(request, TEMPLATE, context={
+        'meal': mealget,
+        'picture': mealget.image,
+        'ingredients': ingredients,
+        'comments': comments,
+        'new_comment': new_comment,
+        'comment_form': comment_form
+    })
 
 
 class AllMeals(TemplateView):

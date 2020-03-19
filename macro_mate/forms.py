@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from macro_mate.models import UserProfile, Meal, MealCategory
+from macro_mate.models import UserProfile, Meal, Comment, MealCategory
 from taggit.forms import *
 
 
@@ -91,3 +91,10 @@ class MealForm(forms.ModelForm):
             cleaned_data['url'] = url
 
         return cleaned_data
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('body',)

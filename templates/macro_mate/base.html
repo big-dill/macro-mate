@@ -19,6 +19,9 @@
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
 
+    {% comment %} Star Ratings CSS {% endcomment %}
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+
     <link rel="stylesheet" href="{% static 'css/nutrition_facts.css' %}">
 
     {% comment %} A block so other templates can insert custom CSS in the correct place {% endcomment %}
@@ -129,6 +132,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
+
+    {% comment %} Start Ratings JS {% endcomment %}
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
 
     {% comment %} A block so other templates can insert javascript to the correct place and not inline {% endcomment %}
     {% block js %}
