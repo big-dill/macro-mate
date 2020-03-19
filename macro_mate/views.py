@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect
-from macro_mate.forms import UserForm, MealForm
+from macro_mate.forms import MealForm
 
 from macro_mate.models import Meal, MealCategory
 from taggit.models import Tag
