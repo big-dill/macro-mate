@@ -45,10 +45,10 @@ def add_meal(owner, userprofiles, name, url, tags, ingredients):
         MIN_NUTRIENT_QUANTITY, MAX_NUTRIENT_QUANTITY)
 
     # Add random comments from users who have that meal in their accounts...
-    commenting_users = get_random_sample(userprofiles)
-    for user in commenting_users:
+    commenting_userprofiles = get_random_sample(userprofiles)
+    for userprofile in commenting_userprofiles:
         new_comment = Comment.objects.get_or_create(
-            owner=user.userprofile,
+            owner=userprofile,
             meal=m,
             body=lorem.paragraph()
         )
