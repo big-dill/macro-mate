@@ -13,6 +13,9 @@ class UserForm(forms.ModelForm):
 
 
 class MealForm(forms.ModelForm):
+
+    INGREDIENT_PLACEHOLDER = "Example:\n200g chicken\n50g broccoli\n1tsp olive oil"
+
     name = forms.CharField(max_length=Meal.NAME_MAX_LENGTH,
                            label="Meal Name:*")
 
@@ -30,7 +33,7 @@ class MealForm(forms.ModelForm):
                     required=False,
                     label="Add tags:")
 
-    ingredients = forms.CharField(widget=forms.Textarea,
+    ingredients = forms.CharField(widget=forms.Textarea(attrs={'placeholder': INGREDIENT_PLACEHOLDER}),
                                   required=True,
                                   label="Ingredients:*",
                                   help_text="Each ingredient should be written on a new line. Please include any units, e.g: '20g tomatoes'")

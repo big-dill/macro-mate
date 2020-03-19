@@ -3,6 +3,8 @@
 # cmd-shift-p > Tasks:Run Task > populate-db
 
 
+from django.contrib.auth.models import User
+from macro_mate.models import Meal, MealCategory
 import lorem
 import random
 import django
@@ -13,8 +15,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
-from macro_mate.models import Meal, MealCategory
-from django.contrib.auth.models import User
 
 MAX_MEAL_SERVING = 5
 MAX_NUTRIENT_QUANTITY = 4000
@@ -27,13 +27,13 @@ def add_meal(owner, users, name, url, tags, ingredients):
     # randomly add tags (change list to individual args with *)
     m.tags.add(*tags)
     # add random serving
-    m.servings = random.randint(0, MAX_MEAL_SERVING)
+    m.servings = random.randint(1, MAX_MEAL_SERVING)
     # join tags into new line separated list
     m.ingredients = get_char_joined_string(ingredients, "\n")
     # Randomly generate some lorum for the notes
     m.notes = lorem.paragraph() if random.choice([True, False]) else ''
     # Add nutrients (default units will be used)
-    m.calorie_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
+    m.calories_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
     m.fat_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
     m.protein_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
     m.carbs_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)

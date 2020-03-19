@@ -2,7 +2,7 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from macro_mate.forms import MealForm, CommentForm
 
@@ -29,6 +29,7 @@ def meal(request, meal_id_slug):
     # 404 if no meal found
     mealget = get_object_or_404(Meal, id=meal_id_slug)
     user = request.user
+    is_owner = mealget.owner == user.userprofile
     ingredients = mealget.ingredients.split('\n')
     comments = mealget.comments.all()
     new_comment = None
@@ -54,6 +55,7 @@ def meal(request, meal_id_slug):
             comment_form = None
 
     return render(request, TEMPLATE, context={
+        'is_owner': is_owner,
         'meal': mealget,
         'picture': mealget.image,
         'ingredients': ingredients,
@@ -72,7 +74,6 @@ class AllMeals(TemplateView):
         context = super().get_context_data(**kwargs)
 
         meals = Meal.objects.all()
-        context['meals'] = meals
 
         tag_slug = self.kwargs.get('slug', None)
 
@@ -81,7 +82,6 @@ class AllMeals(TemplateView):
                 tag = Tag.objects.get(slug=tag_slug)
                 context['tag'] = tag
                 meals = meals.filter(tags__name__in=[tag.name])
-                print(meals)
             except Tag.DoesNotExist:
                 # Ignore modifying self.meals if no tags are found
                 # Signal in context_dict so an error message can be displayed
@@ -99,6 +99,8 @@ class AllMeals(TemplateView):
         # get all tags
         context['tags'] = Tag.objects.all().order_by('name')
 
+        context['meals'] = meals
+
         return context
 
 
@@ -109,7 +111,14 @@ class MyMeals(LoginRequiredMixin, AllMeals):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['meals'] = Meal.objects.filter(users=user.userprofile)
+        context['meals'] = context['meals'].filter(owner=user.userprofile)
+        context['recent_meals'] = context['meals'].order_by(
+            '-created_date')[0:6]
+
+        for cat in context['categories']:
+            cat['meals'] = cat['meals'].filter(owner=user.userprofile)
+
+        # print([meal.name for meal in context['meals'].all()])
         context['username'] = user.username
         context['user_id'] = user.id
         return context
@@ -121,14 +130,35 @@ class AddMeal(View):
     TEMPLATE = "macro_mate/add_meal.html"
 
     @method_decorator(login_required)
-    def get(self, request):
-        """ Display the form for adding a meal """
+    def get(self, request, meal_id_slug):
+        """ Display the form for adding / editing a meal """
+
+        form = MealForm()
+        # If the user is trying to edit a pre-existing meal
+        if(meal_id_slug):
+            # 404 if no meal found
+            mealget = get_object_or_404(Meal, id=meal_id_slug)
+            user = request.user
+
+            # Forbidden page if they are not the owner of the meal
+            if (mealget.owner != user.userprofile):
+                return HttpResponseForbidden()
+            else:
+                # Otherwise, fill the form in with the meal and return
+
+                # Parse the tag fields to a comma separated list
+                parsed_tags = ",".join(
+                    [tag.name for tag in mealget.tags.all()])
+
+                form = MealForm(
+                    initial={'tags': parsed_tags}, instance=mealget)
+
         return render(request, self.TEMPLATE, context={
-            'form': MealForm()
+            'form': form
         })
 
     @method_decorator(login_required)
-    def post(self, request):
+    def post(self, request, meal_id_slug):
         """ Process the form submitted by the user """
         form = MealForm(request.POST, request.FILES)
         user = request.user

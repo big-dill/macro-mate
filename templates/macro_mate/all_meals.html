@@ -61,6 +61,8 @@ Meals
     </div>
 </div>
 
+{% comment %} If the user has meals, display everything {% endcomment %}
+{% if meals %}
 <div class="row">
     {% comment %} Tags search bar. Changes order depending on device {% endcomment %}
     <div class="col-xs-12 col-md-4 order-2 order-md-1">
@@ -119,6 +121,13 @@ Meals
 {% for category in categories %}
 {% include 'macro_mate/meal_list.html' with title=category.name tag=tag meals=category.meals %}
 {% endfor %}
+
+
+{% else %}
+{% comment %} If the user doesn't have meals, prompt a message {% endcomment %}
+<p>You have no meals! Please add one with the link above, or search other users' meals! </p>
+{% endif %}
+
 
 
 {% endblock %}

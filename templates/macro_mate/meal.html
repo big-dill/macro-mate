@@ -10,7 +10,9 @@ Meals
 
 {% block header_block %}
 <div class="text-center">
-    <div>{{meal.name|title}}</div>
+    <div>{{meal.name|title}}{% if is_owner %}<a class="ml-3 btn btn-primary rounded-pill"
+            href="{% url 'macro_mate:add_meal' %}{{meal.id}}"><i class="fa fa-pencil" aria-hidden="true"></i>
+            Edit</a>{% endif %}</div>
     <small>curated by {{meal.owner|title}} </small>
 </div>
 {% endblock %}
@@ -88,7 +90,7 @@ Meals
         <h2 class="mb-4">{{comments|length}} Comments</h2>
         {% for comment in comments %}
         <div>
-            <h3 class="h5">{{comment.owner}} <span class="text-muted font-weight-normal">
+            <h3 class="h5">{{comment.owner|title}} <span class="text-muted font-weight-normal">
                     - {{ comment.created_on }}
                 </span></h3>
             {{ comment.body | linebreaks }}
@@ -108,8 +110,6 @@ Meals
 
             <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
         </form>
-
-
 
         {% endif %}
     </div>
