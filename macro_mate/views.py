@@ -158,13 +158,19 @@ class AddMeal(View):
                     initial={'tags': parsed_tags}, instance=mealget)
 
         return render(request, self.TEMPLATE, context={
-            'form': form
+            'form': form,
+            'meal_id': meal_id_slug
         })
 
     @method_decorator(login_required)
-    def post(self, request, meal_id_slug):
+    def post(self, request, meal_id_slug=None):
         """ Process the form submitted by the user """
-        form = MealForm(request.POST, request.FILES)
+        if meal_id_slug:
+            form = MealForm(request.POST, request.FILES,
+                            instance=Meal.objects.get(id=meal_id_slug))
+        else:
+            form = MealForm(request.POST, request.FILES)
+
         user = request.user
 
         if form.is_valid():
@@ -193,4 +199,4 @@ class AddMeal(View):
 
         else:
             print(form.errors)
-            return render(request, self.TEMPLATE, context={'form': form})
+            return render(request, self.TEMPLATE, context={'form': form, 'meal_id': meal_id_slug})
