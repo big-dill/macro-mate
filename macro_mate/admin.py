@@ -1,8 +1,8 @@
 from django.contrib import admin
-from macro_mate.models import UserProfile
 
-from macro_mate.models import Meal
-# Register your models here.
+from macro_mate.models import Comment, MealCategory, Meal, UserProfile
+
+# Admin page not really live, just used for debugging.
 
 
 class PageAdmin(admin.ModelAdmin):
@@ -10,5 +10,7 @@ class PageAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin():
-    admin.site.register(UserProfile)
+    admin.site.register(Comment)
     admin.site.register(Meal)
+    admin.site.register(MealCategory)
+    admin.site.register(UserProfile)
