@@ -1,4 +1,5 @@
 # Script to be run on setting up server to correctly provide options for users
+# Note: This is NOT a demo populate script, this is for production.
 
 import django
 import os

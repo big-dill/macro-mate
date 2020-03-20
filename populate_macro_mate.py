@@ -2,7 +2,6 @@
 # But a vscode task is setup to do run this
 # cmd-shift-p > Tasks:Run Task > populate-db
 
-
 import lorem
 import random
 import django
@@ -13,36 +12,52 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
-from macro_mate.models import Meal, MealCategory
 from django.contrib.auth.models import User
+from macro_mate.models import Meal, MealCategory, Comment
 
+MIN_MEAL_SERVING = 1
 MAX_MEAL_SERVING = 5
+MIN_NUTRIENT_QUANTITY = 1
 MAX_NUTRIENT_QUANTITY = 4000
 
 
-def add_meal(owner, users, name, url, tags, ingredients):
+def add_meal(owner, userprofiles, name, url, tags, ingredients):
     # randomly assign a list
     m = Meal.objects.get_or_create(owner=owner, name=name, url=url)[0]
 
     # randomly add tags (change list to individual args with *)
     m.tags.add(*tags)
     # add random serving
-    m.servings = random.randint(0, MAX_MEAL_SERVING)
+    m.servings = random.randint(MIN_MEAL_SERVING, MAX_MEAL_SERVING)
     # join tags into new line separated list
     m.ingredients = get_char_joined_string(ingredients, "\n")
     # Randomly generate some lorum for the notes
     m.notes = lorem.paragraph() if random.choice([True, False]) else ''
     # Add nutrients (default units will be used)
-    m.calorie_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
-    m.fat_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
-    m.protein_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
-    m.carbs_quantity = random.uniform(0, MAX_NUTRIENT_QUANTITY)
+    m.calories_quantity = random.uniform(
+        MIN_NUTRIENT_QUANTITY, MAX_NUTRIENT_QUANTITY)
+    m.fat_quantity = random.uniform(
+        MIN_NUTRIENT_QUANTITY, MAX_NUTRIENT_QUANTITY)
+    m.protein_quantity = random.uniform(
+        MIN_NUTRIENT_QUANTITY, MAX_NUTRIENT_QUANTITY)
+    m.carbs_quantity = random.uniform(
+        MIN_NUTRIENT_QUANTITY, MAX_NUTRIENT_QUANTITY)
+
+    # Add random comments from users who have that meal in their accounts...
+    commenting_userprofiles = get_random_sample(userprofiles)
+    for userprofile in commenting_userprofiles:
+        Comment.objects.get_or_create(
+            owner=userprofile,
+            meal=m,
+            body=lorem.paragraph()
+        )
+
     m.save()
 
     # randomly add categories after save (as many to many field)
     m.categories.set(get_random_meal_categories())
     # randomly add users who reference this meal
-    m.users.set(users)
+    m.users.set(userprofiles)
 
     return m
 
@@ -134,19 +149,20 @@ def populate():
         # Add a random amount of meals between 1 and 10 that they own
         for i in range(random.randint(1, 10)):
             userprofile = user.userprofile
-            # Add random users who have the meal in their account, including the creator
-            random_users = set(get_random_sample(userprofiles))
-            random_users.add(userprofile)
+            # Add random users who have the meal in their account,
+            random_userprofiles = set(get_random_sample(userprofiles))
+            #  including the creator
+            random_userprofiles.add(userprofile)
 
-            print(random_users)
+            print(random_userprofiles)
 
             add_meal(
                 # Set user as the owner
                 userprofile,
                 # Add the meal to a random selection of user's accounts
-                random_users,
+                random_userprofiles,
                 # Name their version of the meal
-                user.username + "'s " + random.choice(meal_names),
+                random.choice(meal_names),
                 # Randomly assign a URL
                 random.choice(meal_urls),
                 # Randomly assign meal_tags

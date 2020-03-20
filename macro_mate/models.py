@@ -33,9 +33,6 @@ def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
 
 
-# TODO: Create rating functionality for meal
-# TODO: Create comment class for meal
-
 # THIS MUST BE POPULATED WHEN DEPLOYING APP
 class MealCategory(models.Model):
     """A model for holding a required category for a meal, e.g. breakfast.
@@ -141,3 +138,24 @@ class Meal(models.Model):
                               blank=True)
 
     def __str__(self): return self.name
+
+
+class Comment(models.Model):
+    """A class for comments on models"""
+
+    # Associate many comments to a meal
+    meal = models.ForeignKey(
+        Meal, on_delete=models.CASCADE, related_name='comments')
+
+    # Associate many comments to a user
+    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+    body = models.TextField()
+
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_on']
+
+    def __str__(self):
+        return 'Comment {} by {}'.format(self.body, self.owner)

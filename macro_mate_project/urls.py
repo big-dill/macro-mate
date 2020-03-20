@@ -18,7 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from macro_mate import views
 
 urlpatterns = [
@@ -26,6 +26,10 @@ urlpatterns = [
     path('macro_mate/', include('macro_mate.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('registration.backends.simple.urls')),
+    # For Django 'star-ratings'
+    re_path(r'^ratings/', include('star_ratings.urls',
+                                  namespace='ratings')),
+    # Our own API
     path('api/', include('api.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Above line allows serving static content from MEDIA URL

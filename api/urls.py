@@ -1,7 +1,7 @@
 from django.urls import path
 from api import views
 
-# The app name for our AJAX API
+# The app name for macro_mate AJAX API
 app_name = 'api'
 
 # API Ajax Patterns

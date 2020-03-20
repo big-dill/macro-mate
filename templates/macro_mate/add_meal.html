@@ -34,7 +34,8 @@ Add New Meal
 {% block body_block %}
 
 {% comment %} Form encapsulates whole view. Responsive layout. {% endcomment %}
-<form id="meal_form" enctype="multipart/form-data" method="post" action="/macro_mate/add_meal/">
+<form id="meal_form" enctype="multipart/form-data" method="post"
+    action="{% url 'macro_mate:add_meal' %}{% if meal_id %}{{meal_id}}{% endif %}">
     {% csrf_token %}
 
     {% comment %} Hidden form fields {% endcomment %}
