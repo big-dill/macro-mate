@@ -1,9 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-
 from taggit.forms import TagField
 
-from macro_mate.models import Comment, Meal, MealCategory, UserProfile
+from macro_mate.models import Comment, Meal, MealCategory
 
 
 class MealForm(forms.ModelForm):
