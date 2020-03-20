@@ -3,6 +3,8 @@
 # cmd-shift-p > Tasks:Run Task > populate-db
 
 
+from django.contrib.auth.models import User
+from macro_mate.models import Meal, MealCategory, Comment
 import lorem
 import random
 import django
@@ -13,8 +15,6 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
-from macro_mate.models import Meal, MealCategory, Comment
-from django.contrib.auth.models import User
 
 MIN_MEAL_SERVING = 1
 MAX_MEAL_SERVING = 5
@@ -47,7 +47,7 @@ def add_meal(owner, userprofiles, name, url, tags, ingredients):
     # Add random comments from users who have that meal in their accounts...
     commenting_userprofiles = get_random_sample(userprofiles)
     for userprofile in commenting_userprofiles:
-        new_comment = Comment.objects.get_or_create(
+        Comment.objects.get_or_create(
             owner=userprofile,
             meal=m,
             body=lorem.paragraph()
