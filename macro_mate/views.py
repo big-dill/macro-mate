@@ -85,7 +85,7 @@ class AllMeals(TemplateView):
 
         meals = Meal.objects.all()
         # Get tag slug (has to be this way for TemplateView)
-        tag_slug = self.kwargs.get('slug', None)
+        tag_slug = self.kwargs.get('tag_slug', None)
 
         if(tag_slug):
             try:
@@ -145,7 +145,7 @@ class AddMeal(View):
     TEMPLATE = "macro_mate/add_meal.html"
 
     @method_decorator(login_required)
-    def get(self, request, meal_id_slug):
+    def get(self, request, meal_id_slug=None):
         """ Display the form for adding / editing a meal """
 
         form = MealForm()
