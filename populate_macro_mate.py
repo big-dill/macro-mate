@@ -2,9 +2,6 @@
 # But a vscode task is setup to do run this
 # cmd-shift-p > Tasks:Run Task > populate-db
 
-
-from django.contrib.auth.models import User
-from macro_mate.models import Meal, MealCategory, Comment
 import lorem
 import random
 import django
@@ -15,6 +12,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 
 django.setup()
 
+from django.contrib.auth.models import User
+from macro_mate.models import Meal, MealCategory, Comment
 
 MIN_MEAL_SERVING = 1
 MAX_MEAL_SERVING = 5
