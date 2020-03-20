@@ -30,14 +30,17 @@ def meal(request, meal_id_slug):
     mealget = get_object_or_404(Meal, id=meal_id_slug)
     user = request.user
 
+    # If the user is the owner, we can display 'edit' etc.
     is_owner = False
     if user.is_authenticated:
         is_owner = mealget.owner == user.userprofile
 
+    # Split ingredients for greater render flexibility
     ingredients = mealget.ingredients.split('\n')
     comments = mealget.comments.all()
     new_comment = None
 
+    # If it's a post, it'll be a new comment
     if request.method == 'POST':
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
@@ -53,6 +56,7 @@ def meal(request, meal_id_slug):
             return HttpResponseRedirect(request.path)
 
     else:
+        # Only display comment form for logged-in users
         if user.is_authenticated:
             comment_form = CommentForm()
         else:
@@ -68,6 +72,8 @@ def meal(request, meal_id_slug):
         'comment_form': comment_form
     })
 
+# Extends TemplateView for easier context-mixins
+
 
 class AllMeals(TemplateView):
     """ A view for viewing all meals """
@@ -78,21 +84,22 @@ class AllMeals(TemplateView):
         context = super().get_context_data(**kwargs)
 
         meals = Meal.objects.all()
-
+        # Get tag slug (has to be this way for TemplateView)
         tag_slug = self.kwargs.get('slug', None)
 
         if(tag_slug):
             try:
+                # Filter meals by tag
                 tag = Tag.objects.get(slug=tag_slug)
                 context['tag'] = tag
                 meals = meals.filter(tags__name__in=[tag.name])
             except Tag.DoesNotExist:
-                # Ignore modifying self.meals if no tags are found
                 # Signal in context_dict so an error message can be displayed
-                # For error displays
+                # Will just display every meal regardless
                 context['tag_slug'] = tag_slug
                 context['tag_error'] = True
 
+        # Pin most recent meals
         context['recent_meals'] = meals.order_by('-created_date')[0:6]
 
         categories = [{'name': cat, 'meals': meals.filter(
@@ -107,6 +114,8 @@ class AllMeals(TemplateView):
 
         return context
 
+# Extends MyMeals for DRYness. Uses mixin to ensure only logged in users can access.
+
 
 class MyMeals(LoginRequiredMixin, AllMeals):
     """ A view for viewing the current logged in user's meals.
@@ -115,6 +124,8 @@ class MyMeals(LoginRequiredMixin, AllMeals):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+
+        # Overwrite meals with those connected to the user
         context['meals'] = context['meals'].filter(owner=user.userprofile)
         context['recent_meals'] = context['meals'].order_by(
             '-created_date')[0:6]
@@ -122,7 +133,7 @@ class MyMeals(LoginRequiredMixin, AllMeals):
         for cat in context['categories']:
             cat['meals'] = cat['meals'].filter(owner=user.userprofile)
 
-        # print([meal.name for meal in context['meals'].all()])
+        # Display user info
         context['username'] = user.username
         context['user_id'] = user.id
         return context
@@ -145,12 +156,14 @@ class AddMeal(View):
             user = request.user
 
             # Forbidden page if they are not the owner of the meal
+            # to avoid hax...
             if (mealget.owner != user.userprofile):
                 return HttpResponseForbidden()
             else:
                 # Otherwise, fill the form in with the meal and return
 
-                # Parse the tag fields to a comma separated list
+                # Parse the tag fields to a comma separated list to populate
+                # the input field. Necessary for the JQuery plugin
                 parsed_tags = ",".join(
                     [tag.name for tag in mealget.tags.all()])
 
@@ -165,6 +178,8 @@ class AddMeal(View):
     @method_decorator(login_required)
     def post(self, request, meal_id_slug=None):
         """ Process the form submitted by the user """
+
+        # If there's a meal slug, supply the instance
         if meal_id_slug:
             form = MealForm(request.POST, request.FILES,
                             instance=Meal.objects.get(id=meal_id_slug))
