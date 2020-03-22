@@ -1,18 +1,15 @@
 from django import forms
 from django.contrib.auth.models import User
-from macro_mate.models import UserProfile, Meal, MealCategory
-from taggit.forms import *
+from taggit.forms import TagField
 
-
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
-
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password',)
+from macro_mate.models import Comment, Meal, MealCategory
 
 
 class MealForm(forms.ModelForm):
+    """The form form handling meal addition / editing. Stars on labels indicate compulsory fields"""
+
+    INGREDIENT_PLACEHOLDER = "Example:\n200g chicken\n50g broccoli\n1tsp olive oil"
+
     name = forms.CharField(max_length=Meal.NAME_MAX_LENGTH,
                            label="Meal Name:*")
 
@@ -21,7 +18,7 @@ class MealForm(forms.ModelForm):
                                                 widget=forms.CheckboxSelectMultiple(),
                                                 required=True)
 
-    servings = forms.IntegerField(min_value=0,
+    servings = forms.IntegerField(min_value=1,
                                   initial=1,
                                   label="# Servings:*",
                                   help_text="Nutritional values will be calculated from this.")
@@ -30,11 +27,13 @@ class MealForm(forms.ModelForm):
                     required=False,
                     label="Add tags:")
 
-    ingredients = forms.CharField(widget=forms.Textarea,
+    ingredients = forms.CharField(widget=forms.Textarea(attrs={'placeholder': INGREDIENT_PLACEHOLDER}),
                                   required=True,
                                   label="Ingredients:*",
                                   help_text="Each ingredient should be written on a new line. Please include any units, e.g: '20g tomatoes'")
 
+    # This defaults to http://
+    # In the future it could be modified to be more generic with regex
     url = forms.URLField(max_length=Meal.URL_MAX_LENGTH,
                          required=False,
                          label="Recipe Link:",
@@ -45,10 +44,11 @@ class MealForm(forms.ModelForm):
                             label="Notes:",
                             help_text="Any additional notes for your meal.")
 
+    # Empty files to use placeholder in templates
     image = forms.ImageField(allow_empty_file=True, required=False)
 
     # Hidden nutrition fields to be set with javascript following AJAX reply
-    # Some initial data provided for 'sanitising'
+    # Some initial data provided for ensuring data integrity.
     calories_unit = forms.CharField(
         widget=forms.HiddenInput(), initial=Meal.CALORIE_DEFAULT_UNIT)
     calories_quantity = forms.FloatField(
@@ -69,15 +69,10 @@ class MealForm(forms.ModelForm):
     carbs_quantity = forms.FloatField(
         widget=forms.HiddenInput(), min_value=0)
 
-    # It can go wrong here...
-    # This is always added
-    # caregories = MultiSelectFormField()
-
     class Meta:
         # Associate
         model = Meal
-        # Include all fields except...
-        # Hide the foreign key to owner
+        # Include all fields except owners and creation info
         exclude = ('owner', 'users', 'created_date', 'modified_date')
 
     # Allow cleaning up by appending http://
@@ -91,3 +86,10 @@ class MealForm(forms.ModelForm):
             cleaned_data['url'] = url
 
         return cleaned_data
+
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('body',)

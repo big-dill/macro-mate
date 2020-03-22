@@ -13,24 +13,24 @@
     <div class="nutrition-label">
         <div id="id_nutrition_table_calories" class="nutrition-title">calories</div>
         <div id="id_nutrition_table_calories_quantity" class="nutrition-bottom">
-            {{calories_quantity}}{{calories_unit}}
+            {{calories_quantity|floatformat}}{{calories_unit}}
         </div>
     </div>
     <div class="nutrition-label">
         <div id="id_nutrition_table_fat" class="nutrition-title">fat</div>
-        <div id="id_nutrition_table_fat_quantity" class="nutrition-bottom">{{fat_quantity|floatformat:2}}{{fat_unit}}
+        <div id="id_nutrition_table_fat_quantity" class="nutrition-bottom">{{fat_quantity|floatformat}}{{fat_unit}}
         </div>
     </div>
     <div class="nutrition-label">
         <div id="id_nutrition_table_protein" class="nutrition-title">protein</div>
         <div id="id_nutrition_table_protein_quantity" class="nutrition-bottom">
-            {{protein_quantity|floatformat:2}}{{protein_unit}}
+            {{protein_quantity|floatformat}}{{protein_unit}}
         </div>
     </div>
     <div class="nutrition-label">
         <div id="id_nutrition_table_carbs" class="nutrition-title">carbs</div>
         <div id="id_nutrition_table_carbs_quantity" class="nutrition-bottom">
-            {{carbs_quantity|floatformat:2}}{{carbs_unit}}
+            {{carbs_quantity|floatformat}}{{carbs_unit}}
         </div>
     </div>
 </div>

@@ -1,23 +1,43 @@
-# Decorators
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-
-from django.http import HttpResponse
-from django.http import JsonResponse
-
-# View for view classes
-from django.views import View
-
-from macro_mate.models import Meal
-
-# Import taggit models to get all tags
-from taggit.models import Tag
-
-from macro_mate_project.settings import NUTRITION_API_ID, NUTRITION_API_KEY
-
-# Requests for external API call
 import json
 import requests
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
+from django.views import View
+
+from taggit.models import Tag
+
+from macro_mate.models import Meal
+from macro_mate_project.settings import NUTRITION_API_ID, NUTRITION_API_KEY
+
+
+# Meals API
+# --------
+# Used for AJAX calls that populate the suggestion box when using meals
+
+# API queries:
+# user -> the user ID
+# API returns:
+# a json list of meals and their URLs
+
+class MealsAPI(View):
+    """ An API for viewing the tags contained in the macro_mate app"""
+
+    def get(self, request):
+        query_set = request.GET
+        userID = query_set.get('user', None)
+
+        try:
+            meal_list = get_meals_list(userID)
+        except ValueError:
+            return HttpResponse(-1)
+
+        meal_list_parsed = [{'name': meal.name, 'id': meal.id}
+                            for meal in meal_list]
+
+        # safe=False because returns an array, not a dictionary
+        return JsonResponse(meal_list_parsed, safe=False)
 
 
 def get_meals_list(userID: None):
@@ -30,50 +50,6 @@ def get_meals_list(userID: None):
         results = Meal.objects.all()
 
     return results
-
-# Meals API
-# --------
-# Used for AJAX calls that populate the suggestion box when using meals
-
-# API queries:
-# user -> the user ID
-# API returns:
-# a json list of meals and their URLs
-
-
-class MealsAPI(View):
-    """ An API for viewing the tags contained in the macro_mate app"""
-
-    def get(self, request):
-
-        query_set = request.GET
-        userID = query_set.get('user', None)
-
-        try:
-            meal_list = get_meals_list(userID)
-        except ValueError:
-            return HttpResponse(-1)
-
-        meal_list_parsed = [{'name': meal.name, 'id': meal.id}
-                            for meal in meal_list]
-
-        # safe=False because not a dictionary
-        return JsonResponse(meal_list_parsed, safe=False)
-
-
-def get_tag_list(max_results: int = 0, contains: str = ''):
-    """Returns a list of tags stored in the Tag database model"""
-    if contains:
-        results = Tag.objects.filter(name__icontains=contains)
-    else:
-        results = Tag.objects.all()
-    # if max_results is defined
-    if max_results > 0:
-        # trim list
-        if len(results) > max_results:
-            results = results[:max_results]
-    # Return a list of tag names for json
-    return [{'name': tag.name} for tag in results]
 
 
 # Tags API
@@ -106,6 +82,21 @@ class TagsAPI(View):
         return JsonResponse(tag_list, safe=False)
 
 
+def get_tag_list(max_results: int = 0, contains: str = ''):
+    """Returns a list of tags stored in the Tag database model"""
+    if contains:
+        results = Tag.objects.filter(name__icontains=contains)
+    else:
+        results = Tag.objects.all()
+    # if max_results is defined
+    if max_results > 0:
+        # trim list
+        if len(results) > max_results:
+            results = results[:max_results]
+    # Return a list of tag names for json
+    return [{'name': tag.name} for tag in results]
+
+
 # Nutrition API
 # --------
 # Used for AJAX calls that analyse an ingredient list.
@@ -126,12 +117,6 @@ class TagsAPI(View):
     # unit: STRING
 # },
 # ... same for: fat, protein, carbs
-
-
-class HttpResponseLowQualityIngredients(HttpResponse):
-    """Create a 555 response that matches edemam's own"""
-    status_code = 555
-
 
 class NutritionAPI(View):
     """ Calls the Edamam API on the server, to prevent API key being exposed """
@@ -174,7 +159,7 @@ class NutritionAPI(View):
         # Parse the response for our own app
         response_dict = r.json()
 
-        # Throw a custom error if edemam says our ingredients are rubbish
+        # Throw a custom error if edemam says our ingredient list is not parsable
         if response_dict.get('error', False):
             return HttpResponseLowQualityIngredients()
 
@@ -198,3 +183,8 @@ class NutritionAPI(View):
         print(parsed_response)
 
         return HttpResponse(json.dumps(parsed_response), content_type="application/json")
+
+
+class HttpResponseLowQualityIngredients(HttpResponse):
+    """Create a 555 response that matches edemam's own"""
+    status_code = 555
