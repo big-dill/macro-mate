@@ -1,9 +1,4 @@
-import re
-import tempfile
-from macro_mate import forms
-from django.db import models
-from django.test import TestCase, Client
-from django.urls import reverse
+from django.test import TestCase
 from django.contrib.auth.models import User
 from macro_mate.models import UserProfile
 
@@ -27,8 +22,7 @@ class tests_user_registration(TestCase):
         response = self.client.post('/accounts/login/', {'username': '', 'email': '','password': ''})
         self.assertTrue(response.status_code != 302)
 
-    
-    
+
     def test_good_form_creation(self):
         """ Tests the functionality of the user registration forms.
         Creates a UserProfileForm and UserForm, and attempts to save them.
