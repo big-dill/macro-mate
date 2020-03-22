@@ -1,12 +1,11 @@
-from macro_mate import forms, models
+from macro_mate import forms
 from populate_macro_mate import populate
 from django.db import models
 from django.test import TestCase, Client
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from macro_mate.models import Meal, MealCategory
-from django.shortcuts import get_object_or_404
+from macro_mate.models import Meal
 
 def createUser():
     # helper function to register a new user
@@ -18,37 +17,37 @@ def createUser():
 
 class tests_meal_creation(TestCase):
     meal_data = {
-                    'name': 'testmeal',
-                    'url': 'http://www.testmeal.com',
-                    'servings': '2',
-                    'ingredients':'200g Chicken, 20g tomatoes', 
-                    'notes':'test notes',
-                    'categories':[('1')],
-                    'calories_unit':'kcal',
-                    'calories_quantity':'100',
-                    'fat_unit':'g',
-                    'fat_quantity':'10',
-                    'protein_unit':'g',
-                    'protein_quantity':'10',
-                    'carbs_unit':'g',
-                    'carbs_quantity':'10',
+            'name': 'testmeal',
+            'url': 'http://www.testmeal.com',
+            'servings': '2',
+            'ingredients':'200g Chicken, 20g tomatoes',
+            'notes':'test notes',
+            'categories':[('1')],
+            'calories_unit':'kcal',
+            'calories_quantity':'100',
+            'fat_unit':'g',
+            'fat_quantity':'10',
+            'protein_unit':'g',
+            'protein_quantity':'10',
+            'carbs_unit':'g',
+            'carbs_quantity':'10',
                     }
     meal_data_null = {
-                    'name': '',
-                    'url': '',
-                    'servings': '',
-                    'ingredients':'', 
-                    'notes':'',
-                    'categories':[('')],
-                    'calories_unit':'',
-                    'calories_quantity':'',
-                    'fat_unit':'',
-                    'fat_quantity':'',
-                    'protein_unit':'',
-                    'protein_quantity':'',
-                    'carbs_unit':'',
-                    'carbs_quantity':'',
-                    }
+            'name':'',
+            'url':'',
+            'servings':'',
+            'ingredients':'',
+            'notes':'',
+            'categories':[('')],
+            'calories_unit':'',
+            'calories_quantity':'',
+            'fat_unit':'',
+            'fat_quantity':'',
+            'protein_unit':'',
+            'protein_quantity':'',
+            'carbs_unit':'',
+            'carbs_quantity':'',
+            }
 
     def test_good_meal_view(self):
         """ A test for checking the add meal view when submitting valid data """
@@ -93,7 +92,7 @@ class tests_meal_creation(TestCase):
         populate()
         numMeals = len(Meal.objects.all())
     # tries to add meals when all the values in the form are left blank
-        user = createUser()
+        createUser()
         self.client.login(username='testuser', password='testabc123')
 
         meal_form = forms.MealForm(data=tests_meal_creation.meal_data_null)
@@ -103,11 +102,9 @@ class tests_meal_creation(TestCase):
     def test_update_meal_creation(self):
         """ A test for checking that a meal can be updated """
         populate()
-        numMeals = len(Meal.objects.all())
     # tests the update meal function
         user = createUser()
         self.client.login(username='testuser', password='testabc123')
-        numMeals = len(Meal.objects.all())
         meal_form = forms.MealForm(data=tests_meal_creation.meal_data)
 
         print(meal_form.errors.as_data())
@@ -115,7 +112,7 @@ class tests_meal_creation(TestCase):
         meal_object = meal_form.save(commit=False)
         meal_object.owner = user.userprofile
         meal_object.save()
-
+        numMeals = len(Meal.objects.all())
         meal = meal_object
         meal.owner = user.userprofile
         meal_data_updated = {
@@ -143,4 +140,5 @@ class tests_meal_creation(TestCase):
         # makes sure meal is updated and not just a new instance created
         self.assertTrue(meal.name == 'testmeal2updated')
         self.assertTrue(meal_object.name == 'testmeal2updated')
+        self.assertEqual(numMeals,len(Meal.objects.all()) )
         

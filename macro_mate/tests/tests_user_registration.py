@@ -1,14 +1,10 @@
-import os
 import re
-import inspect
 import tempfile
-from macro_mate import forms, models
+from macro_mate import forms
 from django.db import models
 from django.test import TestCase, Client
-from django.conf import settings
-from django.urls import reverse, resolve
+from django.urls import reverse
 from django.contrib.auth.models import User
-from django.forms import fields as django_fields
 from macro_mate.models import UserProfile
 
 
