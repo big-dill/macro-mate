@@ -29,7 +29,7 @@ class tests_urls_templates(TestCase):
                 'macro_mate/all_meals.html',
                 'macro_mate/all_meals.html',
                 'macro_mate/add_meal.html',]
-            
+
         for url, template in zip(urls, templates):
             response = self.client.get(url, follow=True)
             self.assertTemplateUsed(response, template)

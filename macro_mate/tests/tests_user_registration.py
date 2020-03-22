@@ -35,7 +35,6 @@ class tests_user_registration(TestCase):
         user.save()
 
         response = self.client.post('/accounts/login/', user_data)
-        
         self.assertTrue(response.status_code == 302)
         self.assertEqual(len(User.objects.all()), 1)
         self.assertEqual(len(UserProfile.objects.all()), 1)
