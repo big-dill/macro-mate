@@ -4,7 +4,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from taggit.managers import TaggableManager
-from multiselectfield import MultiSelectField
 
 from django.template.defaultfilters import slugify
 

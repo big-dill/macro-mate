@@ -1,8 +1,8 @@
 from django.views import View
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.contrib.auth import authenticate
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from macro_mate.forms import MealForm, CommentForm
 
