@@ -1,10 +1,16 @@
 name: macro_mate
 channels:
+  - conda-forge
   - defaults
 dependencies:
-  - python=3.7.5
-  - django==2.1.5
+  - python==3.7.5
   - pillow
+  - requests
   - autopep8
-prefix: /opt/anaconda3/envs/macro_mate
-
+  - django==2.1.5
+  - django-taggit
+  - lorem
+  - pip=20.0.2
+  - pip:
+      - django-multiselectfield
+      - django-registration-redux==2.2

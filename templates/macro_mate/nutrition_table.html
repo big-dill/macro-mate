@@ -1,0 +1,36 @@
+{% load staticfiles %}
+
+<h3 class="h4 pb-2 my-4 mx-2 border-bottom">
+    {{ table_title }}
+</h3>
+
+<h4 class="h5 pb-2 my-4 mx-2">
+    For <span id="id_nutrition_table_servings">{{servings}}</span> serving(s):
+</h4>
+
+<div class="d-flex justify-content-center">
+    {% comment %} Custom CSS from static in base.html {% endcomment %}
+    <div class="nutrition-label">
+        <div id="id_nutrition_table_calories" class="nutrition-title">calories</div>
+        <div id="id_nutrition_table_calories_quantity" class="nutrition-bottom">
+            {{calories_quantity|floatformat}}{{calories_unit}}
+        </div>
+    </div>
+    <div class="nutrition-label">
+        <div id="id_nutrition_table_fat" class="nutrition-title">fat</div>
+        <div id="id_nutrition_table_fat_quantity" class="nutrition-bottom">{{fat_quantity|floatformat}}{{fat_unit}}
+        </div>
+    </div>
+    <div class="nutrition-label">
+        <div id="id_nutrition_table_protein" class="nutrition-title">protein</div>
+        <div id="id_nutrition_table_protein_quantity" class="nutrition-bottom">
+            {{protein_quantity|floatformat}}{{protein_unit}}
+        </div>
+    </div>
+    <div class="nutrition-label">
+        <div id="id_nutrition_table_carbs" class="nutrition-title">carbs</div>
+        <div id="id_nutrition_table_carbs_quantity" class="nutrition-bottom">
+            {{carbs_quantity|floatformat}}{{carbs_unit}}
+        </div>
+    </div>
+</div>

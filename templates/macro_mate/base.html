@@ -10,101 +10,135 @@
     <meta name="author" content="">
     <link rel="icon" href="{% static 'images/favicon.ico' %}">
     <title>
-        MacroMate - {% block title_block %}Focus on Food, Fuel your Fitness!{% endblock %}
+        MacroMate - {% block title_block %} Focus on Food, Fuel your Fitness!{% endblock %}
     </title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <!-- Custom styles for this template -->
-    <link href="https://getbootstrap.com/docs/4.1/examples/pricing/pricing.css" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
+
+    {% comment %} Star Ratings CSS {% endcomment %}
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/nutrition_facts.css' %}">
+
+    {% comment %} A block so other templates can insert custom CSS in the correct place {% endcomment %}
+    {% block css %}
+    {% endblock %}
+
 </head>
 
-<body>
+<body class="bg-light">
 
-    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-        {% comment %} App Title - Could probably get this from a variable {% endcomment %}
-        <h5 class="my-0 mr-md-auto font-weight-normal">MacroMate</h5>
-        {% comment %} App Nav - Needs to be replaced with links {% endcomment %}
+    <div
+        class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-info text-light border-bottom box-shadow">
+
+        {% comment %} App title, links to home {% endcomment %}
+        <h5 class="my-0 mr-md-auto font-weight-normal">
+            <a class="text-white" href="/">
+                MacroMate
+            </a>
+        </h5>
+
         <nav class="my-2 my-md-0 mr-md-3">
-            <a class="p-2 text-dark" href="#">Features</a>
-            <a class="p-2 text-dark" href="#">Enterprise</a>
-            <a class="p-2 text-dark" href="#">Support</a>
-            <a class="p-2 text-dark" href="#">Pricing</a>
+
+            {% comment %} Header only displays my_meals if user is logged in {% endcomment %}
+            <a class="p-2 text-white" href="{% url 'macro_mate:meals' %}">Explore Meals</a>
+            {% if  user.is_authenticated %}
+            <a class="p-2 text-white" href="{% url 'macro_mate:my_meals' %}">My Meals</a>
+            {% endif %}
+
+            {% comment %} Sign up and Login Space - dynamic to show 'log out' if user is logged in and
+            'login' and 'sign up' if user is not logged in {% endcomment %}
+            {% if user.is_authenticated %}
+            <a class="p-2 ml-2 btn btn-outline-light" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">
+                Logout</a>
+            {% else %}
+
+            <a class="p-2 ml-2 btn btn-light" href="{% url 'auth_login'%}"> Login</a>
+
+            <a class="p-2 ml-2 btn btn-outline-light"
+                href="{% url 'registration_register' %}?next={% url 'registration_register' %}"> Sign up</a>
+
+            {% endif %}
         </nav>
-        {% comment %} Sign up and Login Space - Needs to be dynamic to 'log out' if user is logged in {% endcomment %}
-        <a class="btn btn-outline-primary" href="#">Sign up</a>
     </div>
 
-    <div class="container">
-
+    {% comment %} Container wrapper with a nice white offset to contrast with grey {% endcomment %}
+    <div class="container bg-white h-100 py-4">
         <main>
+            {% comment %} Header block for other templates {% endcomment %}
+            <h1 class="pb-2 my-4 mx-2 border-bottom">
+                {% block header_block %} {% endblock %}
+            </h1>
+
+            {% comment %} Body block for other templates {% endcomment %}
             {% block body_block %}
             {% endblock %}
         </main>
-
-        {% comment %} Footer for other links etc. {% endcomment %}
-        <footer class="pt-4 my-md-5 pt-md-5 border-top">
-            <div class="row">
-                <div class="col-12 col-md">
-                    <img class="mb-2" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt=""
-                        width="24" height="24">
-                    <small class="d-block mb-3 text-muted">&copy; 2017-2018</small>
-                </div>
-                <div class="col-6 col-md">
-                    <h5>Features</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="#">Cool stuff</a></li>
-                        <li><a class="text-muted" href="#">Random feature</a></li>
-                        <li><a class="text-muted" href="#">Team feature</a></li>
-                        <li><a class="text-muted" href="#">Stuff for developers</a></li>
-                        <li><a class="text-muted" href="#">Another one</a></li>
-                        <li><a class="text-muted" href="#">Last time</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md">
-                    <h5>Resources</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="#">Resource</a></li>
-                        <li><a class="text-muted" href="#">Resource name</a></li>
-                        <li><a class="text-muted" href="#">Another resource</a></li>
-                        <li><a class="text-muted" href="#">Final resource</a></li>
-                    </ul>
-                </div>
-                <div class="col-6 col-md">
-                    <h5>About</h5>
-                    <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="#">Team</a></li>
-                        <li><a class="text-muted" href="#">Locations</a></li>
-                        <li><a class="text-muted" href="#">Privacy</a></li>
-                        <li><a class="text-muted" href="#">Terms</a></li>
-                    </ul>
-                </div>
-            </div>
-        </footer>
     </div>
 
+    {% comment %} Footer for other links etc. {% endcomment %}
+    <footer class="pt-4 pt-md-5 bg-white border-top">
+        <div class="row d-flex flex-row justify-content-around px-2 px-md-5">
+            <div>
+                <h5>Features</h5>
+                <ul class="list-unstyled text-small">
+                    <!-- If the user is logged in, display Logout option-->
+                    {% if user.is_authenticated %}
+                    <li><a class="text-muted" href="{% url 'auth_logout' %}?next={% url 'auth_logout' %}">Logout</a>
+                    </li>
+
+                    {% else %}
+                    <!-- If there is no user logged in, display Login and Register options-->
+                    <li><a class="text-muted" href="{% url 'auth_login'%}">Login</a></li>
+                    <li><a class="text-muted"
+                            href="{% url 'registration_register' %}?next={% url 'registration_register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            {% comment %} Potentially add other footer functionality here {% endcomment %}
+
+            {% comment %} <div>
+                <h5>Resources</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted" href="#">Resource</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>About</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted" href="#">Team</a></li>
+                </ul>
+            </div> {% endcomment %}
+
+        </div>
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
     </script>
-    <script>
-        window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
-    <script src="../../assets/js/vendor/popper.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
-    <script src="../../assets/js/vendor/holder.min.js"></script>
-    <script>
-        Holder.addTheme('thumb', {
-            bg: '#55595c',
-            fg: '#eceeef',
-            text: 'Thumbnail'
-        });
-    </script>
+
+    {% comment %} Start Ratings JS {% endcomment %}
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+
+    {% comment %} A block so other templates can insert javascript to the correct place and not inline {% endcomment %}
+    {% block js %}
+    {% endblock %}
 </body>
 
 </html>

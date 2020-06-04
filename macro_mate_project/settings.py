@@ -35,11 +35,20 @@ with open('edamam.key') as f:
     edamamKey = f.read().strip()
 NUTRITION_API_KEY = edamamKey
 
+# Nutrition analysis ID
+NUTRITION_API_ID = 'cb0c4b16'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+REGISTRATION_OPEN = True
+REGISTRATION_AUTO_LOGIN = True
+LOGIN_REDIRECT_URL = 'macro_mate:index'
+LOGIN_URL = 'auth_login'
 
 
 # Application definition
@@ -51,7 +60,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'taggit',
+    'star_ratings',
     'macro_mate',
+    'registration',
 ]
 
 MIDDLEWARE = [
@@ -114,6 +126,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Password hashers
+
+PASSWORD_HASHERS = ('django.contrib.auth.hashers.PBKDF2PasswordHasher',
+                    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher', )
 
 
 # Internationalization

@@ -1,0 +1,118 @@
+{% extends 'macro_mate/base.html' %}
+{% load staticfiles %}
+{% comment %} For Star Ratings {% endcomment %}
+{% load ratings %}
+{% load filters %}
+
+{% block title_block %}
+Meals
+{% endblock %}
+
+{% block header_block %}
+<div class="text-center">
+    <div>{{meal.name|title}}{% if is_owner %}<a class="ml-3 btn btn-primary rounded-pill"
+            href="{% url 'macro_mate:add_meal' %}{{meal.id}}"><i class="fa fa-pencil" aria-hidden="true"></i>
+            Edit</a>{% endif %}</div>
+    <small>curated by {{meal.owner|title}} </small>
+</div>
+{% endblock %}
+
+{% block body_block %}
+
+{% comment %} bootstrap was used to structure the template {% endcomment %}
+
+{% comment %} Container adds additional padding {% endcomment %}
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-md-auto order-1 order-md-2 mb-4">
+            {% ratings meal %}
+        </div>
+        <div class="col-md-8 order-2 order-md-1 mr-auto">
+            <div class=" mb-4">
+                <h2 class="h4 d-md-inline mr-4">Categories:</h2>
+
+                {% for cat in meal.categories.all %}
+                <span class="mr-1 badge badge-success">{{ cat }}</span>
+                {% endfor %}
+            </div>
+            <div class="mb-4">
+                <h2 class="h4 d-md-inline mr-4">Tags:</h2>
+
+                {% for tag in meal.tags.all %}
+                <span class="mr-1 badge badge-info">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row border-top pt-4">
+        <div class="col-sm col-md-6 mb-4">
+            {% comment %} Getting the image from the meal - if no image displays a default {% endcomment %}
+            <img class="w-100"
+                src="{% if meal.image %}{{meal.image.url}}{% else %}{% static 'images/placeholder.png' %}{% endif %}"
+                alt="{{meal.name}}" width="500" height="auto" />
+
+            {% comment%} The nutrition table gets the nutrition info from the meal model {% endcomment %}
+            {% include 'macro_mate/nutrition_table.html' with table_title="Nutritional Analysis" servings=meal.servings calories_quantity=meal.calories_quantity calories_unit=meal.calories_unit fat_quantity=meal.fat_quantity fat_unit=meal.fat_unit protein_quantity=meal.protein_quantity protein_unit=meal.protein_unit carbs_quantity=meal.carbs_quantity carbs_unit=meal.carbs_unit%}
+        </div>
+
+        <div class="col-sm col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h4 card-title">Ingredients</h2>
+                    <ul class="card-text">
+                        {% for ingredient in ingredients %}
+                        <li>{{ ingredient }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            {% if meal.notes or meal.recipe %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="h4 card-title">Notes</h2>
+                    <p class="card-text">
+                        {{meal.notes}}
+                    </p>
+                    {% if meal.url %}
+
+                    <a class="btn btn-primary" href="{{meal.url}}">Go to external recipe</a>
+
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="border-top pt-4">
+        <h2 class="mb-4">{{comments|length}} Comments</h2>
+        {% for comment in comments %}
+        <div>
+            <h3 class="h5">{{comment.owner|title}} <span class="text-muted font-weight-normal">
+                    - {{ comment.created_on }}
+                </span></h3>
+            {{ comment.body | linebreaks }}
+        </div>
+        {% endfor %}
+
+        {% comment %} If user is logged in, show comment form {% endcomment %}
+        {% if comment_form %}
+
+        <h3 class="mt-4 card-title">Leave a comment</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{comment_form.error}}
+            <div class="w-100">
+                {{comment_form.body|addcss:'form-control mb-4'}}
+            </div>
+
+            <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
